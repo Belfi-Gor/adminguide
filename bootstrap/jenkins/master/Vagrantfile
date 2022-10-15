@@ -1,0 +1,37 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+HOST_NAME = 'jenkins-master' # Имя VM / VM name
+HOST_IP = '192.168.0.10' # VM IP
+
+
+HOST_SHOW_GUI = false # Показывать гуй виртмашины/ Show VM GUI
+HOST_MEMMORY = "1536" # Оперативная память ВМ / VM RAM
+HOST_CPUS = 1 # Количество ядер ВМ / VM vCPU
+HOST_BRIDGE = "Intel(R) Wireless-AC 9560" # В какой сетевой адаптер делать бридж / Network adapter to bridge
+HOST_VM_BOX = "generic/ubuntu2004" # Из какого бокса выкатываемся / Which box to use
+
+# Параметры передаваемые в скрипт инициализации / Parameters passed to provision script
+HOST_CONFIIG_SCRIPT = "jenkins-master.sh" # Скрипт который будет запущен в процессе настройки / Script to use while provisioning
+HOST_USER = 'test' # Дополнительный пользователь / Additional user
+HOST_USER_PASS = '123456789' # Пароль дополнительного пользователя. Пароль рута будет таким же / Additional user pass. Root pass will be same
+HOST_UPGRADE = 'false' # Выполнить apt dist-upgrade / Run apt dist-upgrade
+
+
+#ZABBIX_DB_PASS = '1234567890' # Пароль от БД Zabbix / Zabbix DBPassword
+
+#ZABBIX_REPO = "https://repo.zabbix.com/zabbix/5.4/debian/pool/main/z/zabbix-release/zabbix-release_5.4-1+debian10_all.deb" # DEB пакет для репозитория ZABBIX / Zabbix repo deb package
+
+Vagrant.configure("2") do |config|
+	config.vm.box = HOST_VM_BOX
+	config.vm.hostname = HOST_NAME
+	config.vm.define HOST_NAME do |machine|
+		machine.vm.network :public_network, bridge: HOST_BRIDGE, ip: HOST_IP
+		machine.vm.provider "virtualbox" do |current_vm|
+			current_vm.name = HOST_NAME
+			current_vm.gui = HOST_SHOW_GUI
+			current_vm.memory = HOST_MEMMORY
+			current_vm.cpus = HOST_CPUS
+		end
+	end #															1			2				3				4			5
+	config.vm.provision "shell", path: HOST_CONFIIG_SCRIPT, args: [	HOST_USER, 	HOST_USER_PASS,	HOST_UPGRADE, 	HOST_NAME, 	HOST_IP]
+end
