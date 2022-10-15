@@ -1,0 +1,100 @@
+---
+# tasks file for tinc
+  - name : Update and upgrade apt packages \ Обновит пакеты
+    become: true
+    apt:
+      upgrade: dist # dist-upgrade
+      update_cache: yes # apt cache
+      cache_valid_time: 86400 #One day
+
+  - name: Install packages \ Установка необходимых пакетов
+    become: true
+    apt:
+      name: "{{ item }}"
+      state: present
+    loop:
+      - tinc
+      - htop
+
+  - name: Create a hosts directory for tinc network {{ tinc_network_name  }} / Создать директорию hosts для tinc сети {{ tinc_network_name }}
+    become: true
+    ansible.builtin.file:
+      path: /etc/tinc/{{ tinc_network_name }}/hosts
+      state: directory
+      mode: u=rw,g=r,o=r
+
+  - name: Setup tinc.conf / Настройка tinc.conf
+    become: true
+    lineinfile: 
+      path: /etc/tinc/{{ tinc_network_name }}/tinc.conf
+      line: '{{ item }}'
+      state: present
+      create: yes
+    with_items:
+      - 'Name {{ inventory_hostname }}'
+      - 'AddressFamily ipv4'
+      - 'Interface tun0' 
+
+  - name: Setup tinc file of {{ inventory_hostname }} for client mode/ Настройка tinc файла ноды {{ inventory_hostname }} в режиме клиента
+    become: true
+    lineinfile:
+      path: /etc/tinc/{{ tinc_network_name }}/hosts/{{ inventory_hostname }}
+      line: '{{ item }}'
+      state: present
+      create: yes
+    with_items:
+      - 'Subnet {{ inventory_tinc_network_ip }}'
+
+  - name: Configure tinc-up script / Настройка tinc-up скрипта
+    become: true
+    lineinfile:
+      path: /etc/tinc/{{ tinc_network_name }}/tinc-up
+      line: '{{ item }}'
+      state: present
+      create: yes
+      owner: root
+      group: root
+      mode: '0755'
+    with_items:
+      - '#!/bin/sh'
+      - 'ip link set $INTERFACE up'
+      - 'ip addr add {{ inventory_tinc_network_ip }} dev $INTERFACE'
+      - 'ip route add {{ tinc_network_route }} dev $INTERFACE'
+
+  - name: Configure tinc-up script / Настройка tinc-up скрипта
+    become: true
+    lineinfile:
+      path: /etc/tinc/{{ tinc_network_name }}/tinc-down
+      line: '{{ item }}'
+      state: present
+      create: yes
+      owner: root
+      group: root
+      mode: '0755'
+    with_items:
+      - '#!/bin/sh'
+      - 'ip route del {{ tinc_network_route }} dev $INTERFACE'
+      - 'ip addr del {{ inventory_tinc_network_ip }} dev $INTERFACE'
+      - 'ip link set $INTERFACE down'
+
+  - name: Check RSA keys for network {{ tinc_network_name }} is exists / Проверить наличие RSA ключей для сети {{ tinc_network_name }}
+    become: true
+    stat:
+      path: /etc/tinc/{{ tinc_network_name }}/rsa_key.priv
+    register: keys_found
+  - debug: # Debug when keys found
+      msg: "Keys found"
+    when: keys_found.stat.exists
+  - debug: # Debug when keys NOT found
+      msg: "Keys NOT found"
+    when: keys_found.stat.exists == False
+
+  - name: Creating RSA keys for network {{ tinc_network_name }} / Создаю RSA ключи для сети {{ tinc_network_name }}
+    become: true
+    expect:
+      command: "tincd -n {{ tinc_network_name }} -K4096"
+      responses:
+        "Please enter a file to save private RSA key to *": "\n"
+        "Please enter a file to save public RSA key to *": "\n"
+      echo: yes
+    when: keys_found.stat.exists == False

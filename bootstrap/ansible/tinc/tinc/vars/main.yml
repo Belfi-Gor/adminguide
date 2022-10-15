@@ -1,0 +1,4 @@
+---
+# vars file for tinc
+tinc_network_name: adminguideru
+tinc_network_route: 10.5.5.0/24
