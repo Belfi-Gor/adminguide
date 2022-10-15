@@ -15,6 +15,7 @@ usermod --password $(openssl passwd -6 $2) $1
 
 apt update
 apt install htop
+apt install sshpass
 if [ $3 == "true" ]; then apt upgrade -y; else echo '$3'=$3; fi
 
 rm -Rf /etc/hosts
