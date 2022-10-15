@@ -1,0 +1,60 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+HOST_NAME = 'tincgw' # Имя VM / VM name
+HOST_IP = '192.168.2.11' # VM IP
+
+# Show VM GUI
+# Показывать гуй виртмашины
+HOST_SHOW_GUI = false 
+
+# VM RAM
+# Оперативная память ВМ
+HOST_MEMMORY = "1024" 
+
+# VM vCPU
+# Количество ядер ВМ
+HOST_CPUS = 2 
+
+# Network adapter to bridge
+# В какой сетевой адаптер делать бридж
+HOST_BRIDGE = "Intel(R) Ethernet Connection (2) I219-V" 
+
+# Which box to use
+# Из какого бокса выкатываемся
+HOST_VM_BOX = "generic/ubuntu2004" 
+
+################################################
+# Parameters passed to provision script
+# Параметры передаваемые в скрипт инициализации
+################################################
+
+# Script to use while provisioning
+# Скрипт который будет запущен в процессе настройки
+HOST_CONFIIG_SCRIPT = "tincgw.sh" 
+
+# Additional user
+# Дополнительный пользователь
+HOST_USER = 'test'
+
+# Additional user pass. Root pass will be same
+# Пароль дополнительного пользователя. Пароль рута будет таким же
+HOST_USER_PASS = '123456789' 
+
+# Run apt dist-upgrade
+# Выполнить apt dist-upgrade
+HOST_UPGRADE = 'false' 
+
+Vagrant.configure("2") do |config|
+	config.vm.box = HOST_VM_BOX
+	config.vm.hostname = HOST_NAME
+	config.vm.define HOST_NAME do |machine|
+		machine.vm.network :public_network, bridge: HOST_BRIDGE, ip: HOST_IP
+		machine.vm.provider "virtualbox" do |current_vm|
+			current_vm.name = HOST_NAME
+			current_vm.gui = HOST_SHOW_GUI
+			current_vm.memory = HOST_MEMMORY
+			current_vm.cpus = HOST_CPUS
+		end
+	end #															1			2				3				4			5
+	config.vm.provision "shell", path: HOST_CONFIIG_SCRIPT, args: [	HOST_USER, 	HOST_USER_PASS,	HOST_UPGRADE, 	HOST_NAME, 	HOST_IP]
+end

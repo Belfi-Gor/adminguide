@@ -1,6 +1,9 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
-HOST_NAME = 'jenkins-master' # Имя VM / VM name
+
+# VM name
+# Имя VM
+HOST_NAME = 'jenkins-master' 
 HOST_IP = '192.168.2.10' # VM IP
 
 # Show VM GUI
