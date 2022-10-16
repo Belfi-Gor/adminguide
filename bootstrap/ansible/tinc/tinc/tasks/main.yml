@@ -103,5 +103,5 @@
     become: true
     fetch:
         src: /etc/tinc/{{ tinc_network_name }}/hosts/{{ inventory_hostname }}
-        dest: /var/lib/jenkins/tinc_hostfiles_storage
+        dest: /var/lib/jenkins/tinc_hostfiles_storage/
         flat: yes
