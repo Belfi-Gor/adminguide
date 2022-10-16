@@ -12,6 +12,7 @@ echo ''$1'    ALL=(ALL:ALL) NOPASSWD:ALL' >> /etc/sudoers
 usermod --password $(openssl passwd -6 $2) root
 usermod --password $(openssl passwd -6 $2) $1
 
+echo 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDJi1uiZXE74dfF4pWQGJQaFRww+BwJgNPmzP0moVQ9w+zO6GvI89tGPtKb8jVpDXHoTeytgA1t9LD0N5sYlbX0BE0z9p+UT8tG546ln8AUxLCNzV9tCpMOaNoC28C/d13/xlaY23STPFKjsCKD935K1/RdJIfJFz4S4NYhSJF5PqDSTB/xb69CQUozFMJyL3g7vyo3rjl7eMeCFzCEwihjhWzLlqkGlsCP1WuTKslHetitUnyPV2653C3SqOKCCUQS7lXMHYlvQAZXFtXz/hX5RL0s2UGWODh8uXidBoZpqKdjBQbMLh081lJZ4Pq6AQjhzN7MLUTQZAdMETYrs4pl vagrant' > /home/$1/.ssh/authorized_keys
 
 apt update
 apt install htop

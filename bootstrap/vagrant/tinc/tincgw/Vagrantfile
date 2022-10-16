@@ -1,6 +1,6 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
-HOST_NAME = 'tincgw' # Имя VM / VM name
+HOST_NAME = 'tincgw00' # Имя VM / VM name
 HOST_IP = '192.168.2.11' # VM IP
 
 # Show VM GUI
