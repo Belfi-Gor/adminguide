@@ -100,6 +100,7 @@
     when: keys_found.stat.exists == False
 
   - name: Get current tinc host file to jenkins storage / Загрузить текущий тинк хост файл в хранилище jenkins
+    become: true
     fetch:
         src: /etc/tinc/{{ tinc_network_name }}/hosts/{{ inventory_hostname }}
         dest: /var/lib/jenkins/tinc_hostfiles_storage
