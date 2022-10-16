@@ -1,0 +1,13 @@
+---
+# tasks file for tincgw
+  - name: Setup tinc file of {{ inventory_hostname }} for client mode/ Настройка tinc файла ноды {{ inventory_hostname }} в режиме клиента
+    become: true
+    lineinfile:
+      path: /etc/tinc/{{ tinc_network_name }}/hosts/{{ inventory_hostname }}
+      line: '{{ item }}'
+      state: present
+      create: yes
+    with_items:
+      - 'Subnet {{ inventory_tinc_network_ip }}'
+      - 'Address {{ inventory_tinc_Address }}'
+      - 'Port {{ inventory_tinc_Port }}'

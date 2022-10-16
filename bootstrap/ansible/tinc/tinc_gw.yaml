@@ -1,0 +1,23 @@
+---
+- name: Initial tinc install and configure / Первичная установка и настройка tinc
+  hosts: all
+  gather_facts: False
+  pre_tasks:
+    - name: delete host from known hosts
+      shell: ssh-keygen -f "/var/lib/jenkins/.ssh/known_hosts" -R "192.168.2.11"
+      delegate_to: 127.0.0.1
+      ignore_unreachable: yes
+      ignore_errors: yes
+
+    - name: deliver ssh pub key
+      shell: /usr/bin/sshpass -p 123456789 ssh-copy-id -i /var/lib/jenkins/.ssh/id_rsa.pub -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no test@192.168.2.11
+      delegate_to: 127.0.0.1
+      register: command_result
+      ignore_unreachable: yes
+      ignore_errors: yes
+    - debug:
+        msg: command_result
+    
+  roles:
+    - tinc
+    - tincgw
