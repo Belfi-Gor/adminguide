@@ -1,2 +1,2 @@
 [tinc_gateways]
-tincgw00		ansible_host=192.168.2.11	ansible_user=test	inventory_tinc_network_ip=10.5.5.1/32
+tincgw00		ansible_host=192.168.2.11	ansible_user=test	inventory_tinc_network_ip=10.5.5.1/32	inventory_tinc_Address=212.119.242.94	inventory_tinc_Port=43234
