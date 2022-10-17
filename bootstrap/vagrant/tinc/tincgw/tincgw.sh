@@ -4,6 +4,12 @@
 #ru
 sed -i 's/us.archive.ubuntu.com/mirror.linux-ia64.org/g' /etc/apt/sources.list
 
+echo "      gateway4: 192.168.2.1" >> /etc/netplan/50-vagrant.yaml
+echo "      nameservers:" >> /etc/netplan/50-vagrant.yaml
+echo "              addresses: [192.168.2.1, ]" >> /etc/netplan/50-vagrant.yaml
+
+netplan apply
+
 useradd $1 -s /bin/bash -d /home/test
 mkdir /home/test
 chown -R test:test /home/test
