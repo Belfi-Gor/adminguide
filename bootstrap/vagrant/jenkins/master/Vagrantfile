@@ -4,7 +4,7 @@
 # VM name
 # Имя VM
 HOST_NAME = 'jenkins-master' 
-HOST_IP = '192.168.2.10' # VM IP
+HOST_IP = '192.168.0.10' # VM IP
 
 # Show VM GUI
 # Показывать гуй виртмашины
@@ -16,7 +16,7 @@ HOST_MEMMORY = "2048"
 
 # VM vCPU
 # Количество ядер ВМ
-HOST_CPUS = 2 
+HOST_CPUS = 4
 
 # Network adapter to bridge
 # В какой сетевой адаптер делать бридж
