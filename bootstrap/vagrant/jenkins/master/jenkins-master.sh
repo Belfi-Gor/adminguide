@@ -7,16 +7,17 @@ sed -i 's/us.archive.ubuntu.com/mirror.hoster.kz/g' /etc/apt/sources.list
 useradd $1 -s /bin/bash -d /home/test
 mkdir /home/test
 chown -R test:test /home/test
-echo ''$1'    ALL=(ALL:ALL) ALL' >> /etc/sudoers
+echo ''$1'    ALL=(ALL:ALL) NOPASSWD: ALL' >> /etc/sudoers
 
 usermod --password $(openssl passwd -6 $2) root
 usermod --password $(openssl passwd -6 $2) $1
 
 
 apt update
-apt install htop
-apt install sshpass
-apt install software-properties-common gnupg2 curl
+apt install htop -y
+apt install sshpass -y
+apt install openvpn -y
+apt install software-properties-common gnupg2 curl -y
 
 if [ $3 == "true" ]; then apt upgrade -y; else echo '$3'=$3; fi
 
