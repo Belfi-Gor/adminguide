@@ -62,9 +62,35 @@ resource "proxmox_vm_qemu" "test_server" {
   # be 10.98.1.91 since count.index starts at 0. this is how you can create
   # multiple VMs and have an IP assigned to each (.91, .92, .93, etc.)
   ipconfig0 = "ip=192.168.10.12${count.index + 1}/24,gw=192.168.10.254"
-
+  nameserver = "8.8.8.8"
+  
   # sshkeys set using variables. the variable contains the text of the key.
   sshkeys = <<EOF
   ${var.ssh_key}
   EOF
+
+  # Copy in the bash script we want to execute.
+  # The source is the location of the bash script
+  # on the local linux box you are executing terraform
+  # from.  The destination is on the new AWS instance.
+  provisioner "file" {
+    source      = "/var/lib/jenkins/workspace/prxmox-test-1/bootstrap/terraform/test/initial-config.sh"
+    destination = "/tmp/initial-config.sh"
+  }  
+  
+  # Change permissions on bash script and execute from ec2-user.
+  provisioner "remote-exec" {
+    inline = [
+      "chmod +x /tmp/initial-config.sh",
+      "sudo /tmp/initial-config.sh",
+    ]
+  }
+  
+  connection {
+    type        = "ssh"
+    user        = "ubuntu"
+    password    = ""
+    private_key = file("/var/lib/jenkins/.ssh/id_rsa")
+    host        = "192.168.10.12${count.index + 1}"
+  }
 }

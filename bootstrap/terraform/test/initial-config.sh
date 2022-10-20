@@ -4,6 +4,9 @@
 #ru
 sed -i 's/us.archive.ubuntu.com/mirror.linux-ia64.org/g' /etc/apt/sources.list
 
+sed -i 's/#DNS=/DNS=192.168.10.254/g' /etc/systemd/resolved.conf
+
+
 useradd test -s /bin/bash -d /home/test
 mkdir /home/test
 chown -R test:test /home/test
