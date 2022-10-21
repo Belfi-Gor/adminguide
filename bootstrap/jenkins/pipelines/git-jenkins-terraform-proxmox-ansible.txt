@@ -1,0 +1,27 @@
+pipeline {
+    agent any
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: "https://github.com/Belfi-Gor/adminguide.git", // используем встроенный в Jenkins плагин Git для скачивания проекта из бранча main
+                    credentialsId: 'GitHub'
+            }
+        }
+        stage ('terraform init') {
+            steps {
+                sh ('cd ./bootstrap/terraform/test/ && terraform init')
+            }
+        }
+        stage ('terraform Action') {
+            steps {
+                sh ('cd ./bootstrap/terraform/test/ && terraform apply --auto-approve')
+            }
+        }
+		stage('ansible run playbook') {
+            steps {
+                sh 'ansible-playbook ./bootstrap/ansible/playbook.yml -i ./bootstrap/ansible/hosts' // поскольку скрипты работают в одной папке, на втором шаге мы можем просто запустить плейбук
+            }
+        }
+    }
+}

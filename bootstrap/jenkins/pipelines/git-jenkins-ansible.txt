@@ -1,0 +1,17 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') { // добавим новый Stage
+            steps {
+                git branch: 'main', url: "git@github.com:Belfi-Gor/adminguide.git", // используем встроенный в Jenkins плагин Git для скачивания проекта из бранча main
+                    credentialsId: 'github_jenkins_master_test'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                sh 'ansible-playbook ./bootstrap/ansible/playbook.yml -i ./bootstrap/ansible/hosts' // поскольку скрипты работают в одной папке, на втором шаге мы можем просто запустить плейбук
+            }
+        }
+    }
+}
