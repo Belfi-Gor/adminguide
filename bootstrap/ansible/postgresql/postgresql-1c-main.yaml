@@ -19,5 +19,5 @@
     #     msg: command_result
     
   roles:
-    - commone-server
+    - common-server
     - postgresql-1c-main
