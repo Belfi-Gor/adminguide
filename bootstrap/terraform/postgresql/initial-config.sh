@@ -11,6 +11,7 @@ useradd test -s /bin/bash -d /home/test
 mkdir /home/test
 chown -R test:test /home/test
 echo 'test    ALL=(ALL:ALL) NOPASSWD: ALL' >> /etc/sudoers
+echo 'ubuntu    ALL=(ALL:ALL) NOPASSWD: ALL' >> /etc/sudoers
 
 usermod --password $(openssl passwd -6 123456789) root
 usermod --password $(openssl passwd -6 123456789) test
