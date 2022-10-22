@@ -9,7 +9,7 @@
     src: /var/lib/jenkins/distr/postgresql-12_12.5-3.1C_amd64.tar.gz
     dest: /tmp/
 
- - name: Install /tmp/postgresql-12_12.5-3.1C_amd64.deb
+- name: Install /tmp/postgresql-12_12.5-3.1C_amd64.deb
   become: true
   apt:
     deb: /tmp/postgresql-12_12.5-3.1C_amd64.deb
