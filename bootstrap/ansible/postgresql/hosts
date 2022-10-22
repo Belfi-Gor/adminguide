@@ -1,0 +1,2 @@
+[postgresql-servers]
+postgresql-1c-main		ansible_host=192.168.10.121	ansible_user=ubuntu
