@@ -1,0 +1,5 @@
+---
+# tasks file for postgresql-1c-main
+- name: "Debug"
+  ansible.builtin.debug:
+    msg: "postgresql-1c-main"
