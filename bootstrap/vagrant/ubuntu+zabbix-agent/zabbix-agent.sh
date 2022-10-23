@@ -30,7 +30,7 @@ wget https://repo.zabbix.com/zabbix/6.0/debian/pool/main/z/zabbix-release/zabbix
 dpkg -i zabbix-release_6.0-4+debian11_all.deb
 apt update 
 apt install zabbix-agent -y
-sed -i 's/Server=/Server=$6/g' /etc/apt/sources.list
+sed -i 's/Server=127.0.0.1/Server=$6/g' /etc/apt/sources.list
 systemctl restart zabbix-agent
 systemctl enable zabbix-agent
 
