@@ -64,13 +64,34 @@ Vagrant.configure("2") do |config|
 		config.vm.define machine[:hostname] do |node|
 			node.vm.hostname = machine[:hostname]
 			node.vm.network :public_network, bridge: HOST_BRIDGE, ip: machine[:ip]
-			node.vm.provider "virtualbox" do |current_vm|
+			node.vm.provider "virtualbox" do |current_vm, override|
 				current_vm.name = machine[:hostname]
 				current_vm.gui = HOST_SHOW_GUI
 				current_vm.memory = HOST_MEMMORY
 				current_vm.cpus = HOST_CPUS
-			end
+				override.vm.provision "shell", path: 'zabbix-agent.sh', args: [	'test', 	'123456789',	'false', 	machine[:hostname], 	machine[:ip],	'192.168.0.138'], run: "once"
+			end	
 		end #															1			2				3				4						5				6
-		config.vm.provision "shell", path: HOST_CONFIIG_SCRIPT, args: [	HOST_USER, 	HOST_USER_PASS,	HOST_UPGRADE, 	machine[:hostname], 	machine[:ip],	ZABBIX_SERVER_IP]
+		#config.vm.provision "shell", path: 'test.sh', args: [	'test', 	'123456789',	'false', 	machine[:hostname], 	machine[:ip],	'192.168.0.138'], run: "once"
+		
 	end
+
+	#override.vm.provision "shell", path: 'test.sh', args: [	'test', 	'123456789',	'false', 	'zabbixagent1', 	'192.168.0.20',	'192.168.0.138'], run: "once"
+
+	
+	
 end
+
+# Vagrant.configure("2") do |override|
+# 	#config.vm.define "zabbixagent1" do
+# 		#config.vm.provision "shell", inline: "echo hello", run: "once"
+# 		override.vm.provision "shell", path: 'test.sh', args: [	'test', 	'123456789',	'false', 	'zabbixagent1', 	'192.168.0.20',	'192.168.0.138'], run: "once"
+# 	#end
+# end
+
+# Vagrant.configure("2") do |override|
+# 	#config.vm.define "zabbixagent1" do
+# 		#config.vm.provision "shell", inline: "echo hello", run: "once"
+# 		override.vm.provision "shell", path: 'test.sh', args: [	'test', 	'123456789',	'false', 	'zabbixagent2', 	'192.168.0.21',	'192.168.0.138'], run: "once"
+# 	#end
+# end
