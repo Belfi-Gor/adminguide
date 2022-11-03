@@ -19,25 +19,36 @@ rm -Rf /etc/hosts
 echo "127.0.0.1	localhost.localdomain	localhost" >> /etc/hosts
 echo "$5	$4.localdomain	$4" >> /etc/hosts
 
-#echo "*******************************************************************************"
-#echo "************************** INSTALLING KUBERNETES ******************************"
-#echo "*******************************************************************************"
+echo "*******************************************************************************"
+echo "************************** INSTALLING KUBERNETES ******************************"
+echo "*******************************************************************************"
 apt update && sudo apt install -y apt-transport-https
 curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
 echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
 apt update
 apt install -y kubelet kubeadm kubectl
 
-#echo "*******************************************************************************"
-#echo "***************************** INSTALLING DOCKER *******************************"
-#echo "*******************************************************************************"
-apt install ca-certificates curl gnupg lsb-release
+echo "*******************************************************************************"
+echo "***************************** INSTALLING DOCKER *******************************"
+echo "*******************************************************************************"
+apt install ca-certificates curl gnupg lsb-release -y
 mkdir -p /etc/apt/keyrings
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" > /etc/apt/sources.list.d/docker.list
+
 apt update
+
 apt install docker-ce docker-ce-cli containerd.io docker-compose-plugin -y
 
+echo "*******************************************************************************"
+echo "************************* PREFLIGHTS CONFIGURATION *****************************"
+echo "*******************************************************************************"
+rm /etc/containerd/config.toml
+systemctl restart containerd
+swapoff -a
+sed -i '/swap/d' /etc/fstab
+mount -a
+kubeadm config images pull
 #wget https://repo.zabbix.com/zabbix/6.0/debian/pool/main/z/zabbix-release/zabbix-release_6.0-4%2Bdebian11_all.deb
 #dpkg -i zabbix-release_6.0-4+debian11_all.deb
 #apt update 
