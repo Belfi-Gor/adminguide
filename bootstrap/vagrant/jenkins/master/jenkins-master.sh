@@ -1,8 +1,8 @@
 # repo override
 #kz
-sed -i 's/us.archive.ubuntu.com/mirror.hoster.kz/g' /etc/apt/sources.list
+#sed -i 's/us.archive.ubuntu.com/mirror.hoster.kz/g' /etc/apt/sources.list
 #ru
-#sed -i 's/us.archive.ubuntu.com/mirror.linux-ia64.org/g' /etc/apt/sources.list
+sed -i 's/us.archive.ubuntu.com/mirror.linux-ia64.org/g' /etc/apt/sources.list
 
 useradd $1 -s /bin/bash -d /home/test
 mkdir /home/test
@@ -16,8 +16,40 @@ usermod --password $(openssl passwd -6 $2) $1
 apt update
 apt install htop -y
 apt install sshpass -y
-apt install openvpn -y
+apt install unzip -y
 apt install software-properties-common gnupg2 curl -y
+
+#RUSSIAN EDITION
+apt install openvpn -y
+systemctl disable openvpn
+    #SURFSHARK
+wget https://my.surfshark.com/vpn/api/v1/server/configurations -P /tmp/
+unzip /tmp/configurations -d /tmp/
+cp /tmp/104.200.132.35_tcp.ovpn /etc/openvpn/
+systemctl disable openvpn
+sed -i 's/auth-user-pass/auth-user-pass auth.conf/g' /etc/openvpn/104.200.132.35_tcp.ovpn
+# login
+echo '' >> /etc/openvpn/auth.conf
+#password
+echo '' >> /etc/openvpn/auth.conf
+
+echo '[Unit]' > /lib/systemd/system/openvpn_custom@.service
+echo 'Description=OpenVPN connection to %i' >> /lib/systemd/system/openvpn_custom@.service
+echo 'After=network.target' >> /lib/systemd/system/openvpn_custom@.service
+echo '' >> /lib/systemd/system/openvpn_custom@.service
+echo '[Service]' >> /lib/systemd/system/openvpn_custom@.service
+echo 'Type=forking' >> /lib/systemd/system/openvpn_custom@.service
+echo 'ExecStart=/usr/sbin/openvpn --daemon ovpn-%i --status /run/openvpn/%i.status 10 --cd /etc/openvpn --config /etc/openvpn/%i.ovpn' >> /lib/systemd/system/openvpn_custom@.service
+echo 'ExecReload=/bin/kill -HUP $MAINPID' >> /lib/systemd/system/openvpn_custom@.service
+echo 'WorkingDirectory=/etc/openvpn' >> /lib/systemd/system/openvpn_custom@.service
+echo '' >> /lib/systemd/system/openvpn_custom@.service
+echo '[Install]' >> /lib/systemd/system/openvpn_custom@.service
+echo 'WantedBy=multi-user.target' >> /lib/systemd/system/openvpn_custom@.service
+echo 'openvpn@.service (END)' >> /lib/systemd/system/openvpn_custom@.service
+
+systemctl daemon-reload
+
+systemctl start openvpn_custom@104.200.132.35_tcp
 
 if [ $3 == "true" ]; then apt upgrade -y; else echo '$3'=$3; fi
 
@@ -83,3 +115,6 @@ echo "jenkins initial password"
 cat /var/lib/jenkins/secrets/initialAdminPassword
 echo "jenkins url"
 echo 'http://'$5':8080'
+
+systemctl stop openvpn_custom@104.200.132.35_tcp
+systemctl disable openvpn_custom@104.200.132.35_tcp

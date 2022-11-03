@@ -4,7 +4,7 @@
 # VM name
 # Имя VM
 HOST_NAME = 'jenkins-master' 
-HOST_IP = '192.168.0.10' # VM IP
+HOST_IP = '192.168.2.10' # VM IP
 
 # Show VM GUI
 # Показывать гуй виртмашины
@@ -20,8 +20,8 @@ HOST_CPUS = 4
 
 # Network adapter to bridge
 # В какой сетевой адаптер делать бридж
-#HOST_BRIDGE = "Intel(R) Ethernet Connection (2) I219-V" 
-HOST_BRIDGE = "Intel(R) Wireless-AC 9560"
+HOST_BRIDGE = "Intel(R) Ethernet Connection (2) I219-V" 
+#HOST_BRIDGE = "Intel(R) Wireless-AC 9560"
 
 # Which box to use
 # Из какого бокса выкатываемся
