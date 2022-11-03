@@ -19,10 +19,10 @@ apt install sshpass -y
 apt install unzip -y
 apt install software-properties-common gnupg2 curl -y
 
-#RUSSIAN EDITION
+#Some packages may not be installed without vpn
 apt install openvpn -y
 systemctl disable openvpn
-    #SURFSHARK
+#Configuration for Surfshark
 wget https://my.surfshark.com/vpn/api/v1/server/configurations -P /tmp/
 unzip /tmp/configurations -d /tmp/
 cp /tmp/104.200.132.35_tcp.ovpn /etc/openvpn/
@@ -33,6 +33,8 @@ echo '' >> /etc/openvpn/auth.conf
 #password
 echo '' >> /etc/openvpn/auth.conf
 
+#Create service which accept ovpn file in /etc/openvpn as external @ parameter
+#Создание сервиса который использует имя ovpn файла из /etc/openvpn как внешний @ параметр
 echo '[Unit]' > /lib/systemd/system/openvpn_custom@.service
 echo 'Description=OpenVPN connection to %i' >> /lib/systemd/system/openvpn_custom@.service
 echo 'After=network.target' >> /lib/systemd/system/openvpn_custom@.service
