@@ -20,8 +20,14 @@ echo "127.0.0.1	localhost.localdomain	localhost" >> /etc/hosts
 echo "$5	$4.localdomain	$4" >> /etc/hosts
 
 #echo "*******************************************************************************"
-#echo "************************** INSTALLING ZABBIX-AGENT ****************************"
+#echo "************************** INSTALLING KUBERNETES ******************************"
 #echo "*******************************************************************************"
+apt update && sudo apt install -y apt-transport-https
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
+apt update
+apt install -y kubelet kubeadm kubectl
+
 #wget https://repo.zabbix.com/zabbix/6.0/debian/pool/main/z/zabbix-release/zabbix-release_6.0-4%2Bdebian11_all.deb
 #dpkg -i zabbix-release_6.0-4+debian11_all.deb
 #apt update 
