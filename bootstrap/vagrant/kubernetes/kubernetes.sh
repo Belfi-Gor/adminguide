@@ -41,7 +41,7 @@ apt update
 apt install docker-ce docker-ce-cli containerd.io docker-compose-plugin -y
 
 echo "*******************************************************************************"
-echo "************************* PREFLIGHTS CONFIGURATION *****************************"
+echo "************************* PREFLIGHTS CONFIGURATION ****************************"
 echo "*******************************************************************************"
 rm /etc/containerd/config.toml
 systemctl restart containerd
@@ -49,6 +49,13 @@ swapoff -a
 sed -i '/swap/d' /etc/fstab
 mount -a
 kubeadm config images pull
+
+
+
+#kubeadm init
+#export KUBECONFIG=/etc/kubernetes/admin.conf
+#kubectl apply -f https://github.com/weaveworks/weave/releases/download/v2.8.1/weave-daemonset-k8s.yaml
+
 #wget https://repo.zabbix.com/zabbix/6.0/debian/pool/main/z/zabbix-release/zabbix-release_6.0-4%2Bdebian11_all.deb
 #dpkg -i zabbix-release_6.0-4+debian11_all.deb
 #apt update 
