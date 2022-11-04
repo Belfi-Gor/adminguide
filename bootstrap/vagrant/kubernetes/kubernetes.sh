@@ -50,38 +50,92 @@ sed -i '/swap/d' /etc/fstab
 mount -a
 kubeadm config images pull
 
+echo "*******************************************************************************"
+echo "********************** ONE NODE CLUSTER CONFIGURATION *************************"
+echo "*******************************************************************************"
+kubeadm init --pod-network-cidr=192.168.0.0/16 --apiserver-advertise-address=192.168.2.30
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+kubectl apply -f https://github.com/weaveworks/weave/releases/download/v2.8.1/weave-daemonset-k8s.yaml
+curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+chmod 700 get_helm.sh
+./get_helm.sh
+kubectl taint nodes --all node-role.kubernetes.io/control-plane-
+
+echo "*******************************************************************************"
+echo "************************** POSTGRESQL + PV EXAMPLE ****************************"
+echo "*******************************************************************************"
+echo 'kind: StorageClass' > /home/test/storage.yaml
+echo 'apiVersion: storage.k8s.io/v1' >> /home/test/storage.yaml
+echo 'metadata:' >> /home/test/storage.yaml
+echo '  name: local-storage' >> /home/test/storage.yaml
+echo 'provisioner: kubernetes.io/no-provisioner' >> /home/test/storage.yaml
+echo 'volumeBindingMode: WaitForFirstConsumer' >> /home/test/storage.yaml
+
+kubectl apply -f /home/test/storage.yaml
+mkdir -p /devkube/postgresql
 
 
-#kubeadm init --pod-network-cidr=192.168.0.0/16 --apiserver-advertise-address=192.168.2.30
-#export KUBECONFIG=/etc/kubernetes/admin.conf
-#kubectl apply -f https://github.com/weaveworks/weave/releases/download/v2.8.1/weave-daemonset-k8s.yaml
-#kubectl get pods --all-namespaces
+echo 'apiVersion: v1' > /home/test/pv.yaml
+echo 'kind: PersistentVolume' >> /home/test/pv.yaml
+echo 'metadata:' >> /home/test/pv.yaml
+echo '  name: pv-for-pg' >> /home/test/pv.yaml
+echo '  labels:' >> /home/test/pv.yaml
+echo '    type: local' >> /home/test/pv.yaml
+echo 'spec:' >> /home/test/pv.yaml
+echo '  capacity:' >> /home/test/pv.yaml
+echo '    storage: 4Gi' >> /home/test/pv.yaml
+echo '  volumeMode: Filesystem' >> /home/test/pv.yaml
+echo '  accessModes:' >> /home/test/pv.yaml
+echo '  - ReadWriteOnce' >> /home/test/pv.yaml
+echo '  persistentVolumeReclaimPolicy: Retain' >> /home/test/pv.yaml
+echo '  storageClassName: local-storage' >> /home/test/pv.yaml
+echo '  local:' >> /home/test/pv.yaml
+echo '    path: /devkube/postgresql' >> /home/test/pv.yaml
+echo '  nodeAffinity:' >> /home/test/pv.yaml
+echo '    required:' >> /home/test/pv.yaml
+echo '      nodeSelectorTerms:' >> /home/test/pv.yaml
+echo '      - matchExpressions:' >> /home/test/pv.yaml
+echo '        - key: kubernetes.io/hostname' >> /home/test/pv.yaml
+echo '          operator: In' >> /home/test/pv.yaml
+echo '          values:' >> /home/test/pv.yaml
+echo '          - kube-master-1' >> /home/test/pv.yaml
+
+kubectl apply -f /home/test/pv.yaml
 
 
-#wget https://repo.zabbix.com/zabbix/6.0/debian/pool/main/z/zabbix-release/zabbix-release_6.0-4%2Bdebian11_all.deb
-#dpkg -i zabbix-release_6.0-4+debian11_all.deb
-#apt update 
-#apt install zabbix-agent -y
-#sed -i "s/Server=127.0.0.1/Server=$6/g" /etc/zabbix/zabbix_agentd.conf
-#echo 'UserParameter=custom_echo[*],echo $1' >> /etc/zabbix/zabbix_agentd.conf
-#echo 'UserParameter=my_script[*], python3 /etc/zabbix/test_python_script.py $1 $2' > /etc/zabbix/zabbix_agentd.d/test_user_parameter.conf
-#systemctl restart zabbix-agent
-#systemctl enable zabbix-agent
+echo 'kind: PersistentVolumeClaim' > /home/test/pvc.yaml
+echo 'apiVersion: v1' >> /home/test/pvc.yaml
+echo 'metadata:' >> /home/test/pvc.yaml
+echo '  name: pg-pvc' >> /home/test/pvc.yaml
+echo 'spec:' >> /home/test/pvc.yaml
+echo '  storageClassName: "local-storage"' >> /home/test/pvc.yaml
+echo '  accessModes:' >> /home/test/pvc.yaml
+echo '  - ReadWriteOnce' >> /home/test/pvc.yaml
+echo '  resources:' >> /home/test/pvc.yaml
+echo '    requests:' >> /home/test/pvc.yaml
+echo '      storage: 4Gi' >> /home/test/pvc.yaml
 
-#if [[ ! -f /etc/zabbix/test_python_script.py ]]
-#then
-#    echo 'import sys' >> /etc/zabbix/test_python_script.py
-#    echo 'import os' >> /etc/zabbix/test_python_script.py
-#    echo 'import re' >> /etc/zabbix/test_python_script.py
-#    echo 'if (sys.argv[1] == "-ping"): # Если -ping' >> /etc/zabbix/test_python_script.py
-#    echo '        result=os.popen("ping -c 1 " + sys.argv[2]).read() # Делаем пинг по заданному адресу' >> /etc/zabbix/test_python_script.py
-#    echo '        result=re.findall(r"time=(.*) ms", result) # Выдёргиваем из результата время' >> /etc/zabbix/test_python_script.py
-#    echo '        print(result[0]) # Выводим результат в консоль' >> /etc/zabbix/test_python_script.py
-#    echo 'elif (sys.argv[1] == "-simple_print"): # Если simple_print ' >> /etc/zabbix/test_python_script.py
-#    echo '        print(sys.argv[2]) # Выводим в консоль содержимое sys.arvg[2]' >> /etc/zabbix/test_python_script.py
-#    echo 'else: # Во всех остальных случаях' >> /etc/zabbix/test_python_script.py
-#    echo '        print(f"unknown input: {sys.argv[1]}") # Выводим непонятый запрос в консоль.' >> /etc/zabbix/test_python_script.py
-#fi
+kubectl apply -f /home/test/pvc.yaml
+
+helm repo add bitnami https://charts.bitnami.com/bitnami
+
+helm install dev-pg bitnami/postgresql --set primary.persistence.existingClaim=pg-pvc,auth.postgresPassword=pgpass
+
+
+echo "*******************************************************************************"
+echo "***************************** POSTCONFIGURATION *******************************"
+echo "*******************************************************************************"
+echo "After finish login and run to connect to psql"
+echo 'kubectl run dev-pg-postgresql-client --rm --tty -i --restart="Never" --namespace default --image docker.io/bitnami/postgresql:14.2.0-debian-10-r22 --env="PGPASSWORD=pgpass"       --command -- psql --host dev-pg-postgresql -U postgres -d postgres -p 5432'
+
+
+# export POSTGRES_PASSWORD=$(kubectl get secret --namespace default dev-pg-postgresql -o jsonpath="{.data.postgres-password}" | base64 --decode)
+# kubectl run dev-pg-postgresql-client --rm --tty -i --restart='Never' --namespace default --image docker.io/bitnami/postgresql:14.2.0-debian-10-r22 --env="PGPASSWORD=$POSTGRES_PASSWORD"       --command -- psql --host dev-pg-postgresql -U postgres -d postgres -p 5432
+
+
+
 
 
 echo "*******************************************************************************"
