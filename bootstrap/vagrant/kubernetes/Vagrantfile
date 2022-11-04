@@ -7,15 +7,15 @@ virt_machines=[
   {
     :hostname => "kube-master-1",
     :ip => "192.168.2.30"
-  },
-  {
-    :hostname => "kube-master-2",
-    :ip => "192.168.2.31"
-  },
-  {
-    :hostname => "kube-master-3",
-    :ip => "192.168.2.32"
-  }
+  }#,
+#   {
+#     :hostname => "kube-master-2",
+#     :ip => "192.168.2.31"
+#   },
+#   {
+#     :hostname => "kube-master-3",
+#     :ip => "192.168.2.32"
+#   }
 ]
 
 # Show VM GUI
