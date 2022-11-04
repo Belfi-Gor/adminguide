@@ -52,9 +52,11 @@ kubeadm config images pull
 
 
 
-#kubeadm init
+#kubeadm init --pod-network-cidr=192.168.0.0/16 --apiserver-advertise-address=192.168.2.30
 #export KUBECONFIG=/etc/kubernetes/admin.conf
 #kubectl apply -f https://github.com/weaveworks/weave/releases/download/v2.8.1/weave-daemonset-k8s.yaml
+#kubectl get pods --all-namespaces
+
 
 #wget https://repo.zabbix.com/zabbix/6.0/debian/pool/main/z/zabbix-release/zabbix-release_6.0-4%2Bdebian11_all.deb
 #dpkg -i zabbix-release_6.0-4+debian11_all.deb
