@@ -1,0 +1,168 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+require 'fileutils'
+
+# *** MULTIPLE DISKS CONFIGURATION *** #
+# 	file operations needs to be relative to this file
+# 	Корень относитенльно которого будет производиться все файловые операции с дисками
+VAGRANT_ROOT = File.dirname(File.expand_path(__FILE__))
+VBOXMANAGE_DIR = '"C:/Program Files/Oracle/VirtualBox/vboxmanage"'
+# 	directory that will contain VDI files
+#	Имя папки куда будет размещены диски
+VAGRANT_DISKS_DIRECTORY = "disks"
+# 	controller definition
+#	Имя и тип контроллера
+VAGRANT_CONTROLLER_NAME = "Virtual I/O Device SCSI controller"
+VAGRANT_CONTROLLER_TYPE = "virtio-scsi"
+# define disks / массив параметров виртуальных дисков
+# The format is filename, size (GB), port (see controller docs)
+local_disks = [  #имя		размер (gb)	порт
+  { :filename => "disk1", 	:size => 32, :port => 5 }#,
+#   { :filename => "disk2", 	:size => 2, :port => 6 },
+#   { :filename => "disk3", 	:size => 1, :port => 25 }
+]
+
+# VM array
+# Массив виртмашин
+virt_machines=[
+  {
+    :hostname => "ceph-1",
+    :ip => "192.168.2.30"
+  },
+   {
+     :hostname => "ceph-2",
+     :ip => "192.168.2.31"
+   }#,
+#   {
+#     :hostname => "ceph-3",
+#     :ip => "192.168.2.32"
+#   }
+]
+
+# Show VM GUI
+# Показывать гуй виртмашины
+HOST_SHOW_GUI = false 
+
+# VM RAM
+# Оперативная память ВМ
+HOST_MEMMORY = "2048" 
+
+# VM vCPU
+# Количество ядер ВМ
+HOST_CPUS = 2
+
+# Network adapter to bridge
+# В какой сетевой адаптер делать бридж
+HOST_BRIDGE = "Intel(R) Ethernet Connection (2) I219-V" 
+#HOST_BRIDGE = "Intel(R) Wireless-AC 9560"
+
+# Which box to use
+# Из какого бокса выкатываемся
+HOST_VM_BOX = "generic/ubuntu2004" 
+
+################################################
+# Parameters passed to provision script
+# Параметры передаваемые в скрипт инициализации
+################################################
+
+# Script to use while provisioning
+# Скрипт который будет запущен в процессе настройки
+HOST_CONFIIG_SCRIPT = "ceph.sh" 
+
+# Additional user
+# Дополнительный пользователь
+HOST_USER = 'test'
+
+# Additional user pass. Root pass will be same
+# Пароль дополнительного пользователя. Пароль рута будет таким же
+HOST_USER_PASS = '123456789' 
+
+# Run apt dist-upgrade
+# Выполнить apt dist-upgrade
+HOST_UPGRADE = 'false' 
+
+Vagrant.configure("2") do |config|
+	virt_machines.each do |machine|
+		config.vm.box = HOST_VM_BOX
+		
+		# Получаем директорию для дисков из заданных выше переменных
+		disks_directory = File.join(VAGRANT_ROOT, VAGRANT_DISKS_DIRECTORY)
+
+		# create disks before "up" action
+		# создаём диски до того как начинать поднимать виртмашины
+		config.trigger.before :up do |trigger|
+			trigger.name = "Create disks"
+			trigger.ruby do
+				unless File.directory?(disks_directory) # До тех пор пока не будет создана директория из переменной disks_directory
+					FileUtils.mkdir_p(disks_directory) # Создать директорию disks_directory
+				end
+				local_disks.each do |local_disk| # Для каждого диска из массива local_disks 
+					local_disk_filename = File.join(disks_directory, "#{local_disk[:filename]}.vdi") # Записываыем в переменную путь до директории с именем файла диска
+					unless File.file?(local_disk_filename) # До тех пор пока не будет обнаружен диск из переменной local_disk_filename
+						puts "Creating \"#{local_disk_filename}\" disk" # Выводим сообщение о создании диска
+						puts "#{VBOXMANAGE_DIR} createmedium --filename #{local_disk_filename} --size #{local_disk[:size] * 1024} --format VDI" # Выводим команду используемую для создания диска
+						system("#{VBOXMANAGE_DIR} createmedium --filename #{local_disk_filename} --size #{local_disk[:size] * 1024} --format VDI") # Создаём диск
+						if File.file?(local_disk_filename)
+							puts ("Disk found")
+						else
+							puts ("Disk NOT found")
+						end
+					end
+				end
+			end
+		end
+
+		# create storage controller on first run
+		unless File.directory?(disks_directory) # До тех пор пока условие не выполнено (В данном случае всегда, т.к. папка с дисками уже создана ранее)
+			config.vm.provider "virtualbox" do |storage_provider|
+			storage_provider.customize ["storagectl", :id, "--name", VAGRANT_CONTROLLER_NAME, "--add", VAGRANT_CONTROLLER_TYPE, '--hostiocache', 'off']
+			end
+		end
+
+		# attach storage devices 
+		# Подключаем диски
+		config.vm.provider "virtualbox" do |storage_provider| 
+			local_disks.each do |local_disk| # Для каждого диска из массива local_disk
+				local_disk_filename = File.join(disks_directory, "#{local_disk[:filename]}.vdi") # Составляем переменную с путём и именем диска
+				unless File.exist?(local_disk_filename)
+					# Подключаем диск
+					storage_provider.customize ['storageattach', :id, '--storagectl', VAGRANT_CONTROLLER_NAME, '--port', local_disk[:port], '--device', 0, '--type', 'hdd', '--medium', local_disk_filename]
+				end
+			end
+		end
+		
+		# Создаём ВМ
+		config.vm.define machine[:hostname] do |node|
+			node.vm.hostname = machine[:hostname]
+			node.vm.network :public_network, bridge: HOST_BRIDGE, ip: machine[:ip]
+			node.vm.provider "virtualbox" do |current_vm, override|
+				current_vm.name = machine[:hostname]
+				current_vm.gui = HOST_SHOW_GUI
+				current_vm.memory = HOST_MEMMORY
+				current_vm.cpus = HOST_CPUS
+				override.vm.provision "shell", path: HOST_CONFIIG_SCRIPT, args: [HOST_USER, 	HOST_USER_PASS,	HOST_UPGRADE, 	machine[:hostname], 	machine[:ip]], run: "once"
+			end
+		end
+
+		# cleanup after "destroy" action
+		# Удаление дисков после vagrant destroy
+		config.trigger.after :destroy do |trigger|
+
+			trigger.name = "Cleanup operation"
+			trigger.ruby do
+				# the following loop is now obsolete as these files will be removed automatically as machine dependency
+				local_disks.each do |local_disk|
+					local_disk_filename = File.join(disks_directory, "#{local_disk[:filename]}.vdi")
+					if File.exist?(local_disk_filename)
+						puts "Deleting \"#{local_disk[:filename]}\" disk"
+						system("vboxmanage closemedium disk #{local_disk_filename} --delete")
+					end
+				end
+				if File.exist?(disks_directory)
+					FileUtils.rmdir(disks_directory)
+				end
+			end
+		end
+	end
+end
