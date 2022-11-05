@@ -33,7 +33,7 @@ virt_machines=[
    {
      :hostname => "ceph-2",
      :ip => "192.168.2.31"
-   }#,
+   },
 #   {
 #     :hostname => "ceph-3",
 #     :ip => "192.168.2.32"
@@ -68,7 +68,7 @@ HOST_VM_BOX = "generic/ubuntu2004"
 
 # Script to use while provisioning
 # Скрипт который будет запущен в процессе настройки
-HOST_CONFIIG_SCRIPT = "ceph.sh" 
+HOST_CONFIIG_SCRIPT = "example.sh" 
 
 # Additional user
 # Дополнительный пользователь
@@ -94,11 +94,12 @@ Vagrant.configure("2") do |config|
 		config.trigger.before :up do |trigger|
 			trigger.name = "Create disks"
 			trigger.ruby do
-				unless File.directory?(disks_directory) # До тех пор пока не будет создана директория из переменной disks_directory
-					FileUtils.mkdir_p(disks_directory) # Создать директорию disks_directory
+				unless File.directory?("#{disks_directory}#{machine[:hostname]}/") # До тех пор пока не будет создана директория из переменной disks_directory
+					FileUtils.mkdir_p("#{disks_directory}#{machine[:hostname]}/") # Создать директорию disks_directory
 				end
 				local_disks.each do |local_disk| # Для каждого диска из массива local_disks 
-					local_disk_filename = File.join(disks_directory, "#{local_disk[:filename]}.vdi") # Записываыем в переменную путь до директории с именем файла диска
+					local_disk_filename = File.join(disks_directory, "#{machine[:hostname]}/", "#{local_disk[:filename]}.vdi") # Записываыем в переменную путь до директории с именем файла диска
+					puts local_disk_filename
 					unless File.file?(local_disk_filename) # До тех пор пока не будет обнаружен диск из переменной local_disk_filename
 						puts "Creating \"#{local_disk_filename}\" disk" # Выводим сообщение о создании диска
 						puts "#{VBOXMANAGE_DIR} createmedium --filename #{local_disk_filename} --size #{local_disk[:size] * 1024} --format VDI" # Выводим команду используемую для создания диска
@@ -114,7 +115,7 @@ Vagrant.configure("2") do |config|
 		end
 
 		# create storage controller on first run
-		unless File.directory?(disks_directory) # До тех пор пока условие не выполнено (В данном случае всегда, т.к. папка с дисками уже создана ранее)
+		unless File.directory?("#{disks_directory}#{machine[:hostname]}/") # До тех пор пока условие не выполнено (В данном случае всегда, т.к. папка с дисками уже создана ранее)
 			config.vm.provider "virtualbox" do |storage_provider|
 			storage_provider.customize ["storagectl", :id, "--name", VAGRANT_CONTROLLER_NAME, "--add", VAGRANT_CONTROLLER_TYPE, '--hostiocache', 'off']
 			end
@@ -124,7 +125,7 @@ Vagrant.configure("2") do |config|
 		# Подключаем диски
 		config.vm.provider "virtualbox" do |storage_provider| 
 			local_disks.each do |local_disk| # Для каждого диска из массива local_disk
-				local_disk_filename = File.join(disks_directory, "#{local_disk[:filename]}.vdi") # Составляем переменную с путём и именем диска
+				local_disk_filename = File.join(disks_directory, "#{machine[:hostname]}/", "#{local_disk[:filename]}.vdi") # Составляем переменную с путём и именем диска
 				unless File.exist?(local_disk_filename)
 					# Подключаем диск
 					storage_provider.customize ['storageattach', :id, '--storagectl', VAGRANT_CONTROLLER_NAME, '--port', local_disk[:port], '--device', 0, '--type', 'hdd', '--medium', local_disk_filename]
@@ -153,14 +154,14 @@ Vagrant.configure("2") do |config|
 			trigger.ruby do
 				# the following loop is now obsolete as these files will be removed automatically as machine dependency
 				local_disks.each do |local_disk|
-					local_disk_filename = File.join(disks_directory, "#{local_disk[:filename]}.vdi")
+					local_disk_filename = File.join(disks_directory, "#{machine[:hostname]}/", "#{local_disk[:filename]}.vdi")
 					if File.exist?(local_disk_filename)
 						puts "Deleting \"#{local_disk[:filename]}\" disk"
 						system("vboxmanage closemedium disk #{local_disk_filename} --delete")
 					end
 				end
-				if File.exist?(disks_directory)
-					FileUtils.rmdir(disks_directory)
+				if File.exist?(disks_directory, "#{machine[:hostname]}/", "#{local_disk[:filename]}.vdi")
+					FileUtils.rmdir(disks_directory, "#{machine[:hostname]}/", "#{local_disk[:filename]}.vdi")
 				end
 			end
 		end
