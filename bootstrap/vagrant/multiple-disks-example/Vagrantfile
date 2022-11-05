@@ -18,24 +18,24 @@ VAGRANT_CONTROLLER_TYPE = "virtio-scsi"
 # define disks / массив параметров виртуальных дисков
 # The format is filename, size (GB), port (see controller docs)
 local_disks = [  #имя		размер (gb)	порт
-  { :filename => "disk1", 	:size => 1, :port => 5 },
-  { :filename => "disk2", 	:size => 2, :port => 6 },
-  { :filename => "disk3", 	:size => 1, :port => 25 }
+  { :filename => "disk1", 	:size => 32, :port => 5 }#,
+#   { :filename => "disk2", 	:size => 2, :port => 6 },
+#   { :filename => "disk3", 	:size => 1, :port => 25 }
 ]
 
 # VM array
 # Массив виртмашин
 virt_machines=[
   {
-    :hostname => "multiple-disks-1",
+    :hostname => "ceph-1",
     :ip => "192.168.2.30"
-  }#,
+  },
+   {
+     :hostname => "ceph-2",
+     :ip => "192.168.2.31"
+   }#,
 #   {
-#     :hostname => "kube-master-2",
-#     :ip => "192.168.2.31"
-#   },
-#   {
-#     :hostname => "kube-master-3",
+#     :hostname => "ceph-3",
 #     :ip => "192.168.2.32"
 #   }
 ]
@@ -68,7 +68,7 @@ HOST_VM_BOX = "generic/ubuntu2004"
 
 # Script to use while provisioning
 # Скрипт который будет запущен в процессе настройки
-HOST_CONFIIG_SCRIPT = "example.sh" 
+HOST_CONFIIG_SCRIPT = "ceph.sh" 
 
 # Additional user
 # Дополнительный пользователь
