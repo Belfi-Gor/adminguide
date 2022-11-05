@@ -19,26 +19,53 @@ VAGRANT_CONTROLLER_TYPE = "virtio-scsi"
 # define disks / массив параметров виртуальных дисков
 # The format is filename, size (GB), port (see controller docs)
 local_disks = [  #имя		размер (gb)	порт
-  { :filename => "disk1", 	:size => 32, :port => 5 }#,
-#   { :filename => "disk2", 	:size => 2, :port => 6 },
-#   { :filename => "disk3", 	:size => 1, :port => 25 }
+	{ :filename => "disk1", 	:size => 32, :port => 5 },
+	{ :filename => "disk2", 	:size => 2, :port => 6 },
+	{ :filename => "disk3", 	:size => 1, :port => 25 },
+	{ :filename => "disk4", 	:size => 1, :port => 21 },
+	{ :filename => "disk5", 	:size => 1, :port => 22 },
+	{ :filename => "disk6", 	:size => 1, :port => 23 },
+	{ :filename => "disk7", 	:size => 1, :port => 24 },
+	{ :filename => "disk8", 	:size => 1, :port => 26 },
+	{ :filename => "disk9", 	:size => 1, :port => 27 },
+	{ :filename => "disk10", 	:size => 1, :port => 28 }
 ]
 
 # VM array
 # Массив виртмашин
 virt_machines=[
   {
-    :hostname => "ceph-1",
+    :hostname => "vm-1",
     :ip => "192.168.2.30"
   },
    {
-     :hostname => "ceph-2",
+     :hostname => "vm-2",
      :ip => "192.168.2.31"
-   }#,
-#   {
-#     :hostname => "ceph-3",
-#     :ip => "192.168.2.32"
-#   }
+   },
+  {
+    :hostname => "vm-3",
+    :ip => "192.168.2.32"
+  },
+  {
+    :hostname => "vm-4",
+    :ip => "192.168.2.33"
+  },
+  {
+    :hostname => "vm-5",
+    :ip => "192.168.2.34"
+  },
+  {
+    :hostname => "vm-6",
+    :ip => "192.168.2.35"
+  },
+  {
+    :hostname => "vm-7",
+    :ip => "192.168.2.36"
+  },
+  {
+    :hostname => "vm-8",
+    :ip => "192.168.2.37"
+  }
 ]
 
 # Show VM GUI
@@ -168,21 +195,21 @@ Vagrant.configure("2") do |config|
 			puts "Cleaning ALL data"
 			trigger.name = "Cleanup operation"
 			trigger.ruby do
-				# the following loop is now obsolete as these files will be removed automatically as machine dependency
-				local_disks.each do |local_disk|
-					local_disk_filename = File.join(disks_directory, "/#{machine[:hostname]}/", "#{local_disk[:filename]}.vdi")
-					if File.exist?(local_disk_filename)
-						puts "Deleting \"#{local_disk_filename}\" disk"
-						system("#{VBOXMANAGE_DIR} closemedium disk #{local_disk_filename} --delete")
-					end
-				end
-				if File.exist?("#{disks_directory}/#{machine[:hostname]}")
-					FileUtils.rmdir("#{disks_directory}/#{machine[:hostname]}")
+				# # the following loop is now obsolete as these files will be removed automatically as machine dependency
+				# local_disks.each do |local_disk|
+				# 	local_disk_filename = File.join(disks_directory, "/#{machine[:hostname]}/", "#{local_disk[:filename]}.vdi")
+				# 	if File.exist?(local_disk_filename)
+				# 		puts "Deleting \"#{local_disk_filename}\" disk"
+				# 		system("#{VBOXMANAGE_DIR} closemedium disk #{local_disk_filename} --delete")
+				# 	end
+				# end
+				# if File.exist?("#{disks_directory}/#{machine[:hostname]}")
+				# 	FileUtils.rmdir("#{disks_directory}/#{machine[:hostname]}")
+				# end
+				if File.exist?(disks_directory)
+					FileUtils.rm_r(disks_directory, :force => true)
 				end
 			end
 		end
-		# if File.exist?(disks_directory)
-		# 	FileUtils.rmdir(disks_directory)
-		# end
 	end
 end
