@@ -3,26 +3,24 @@
 
 require 'fileutils'
 
-# file operations needs to be relative to this file
+# *** MULTIPLE DISKS CONFIGURATION *** #
+# 	file operations needs to be relative to this file
+# 	Корень относитенльно которого будет производиться все файловые операции с дисками
 VAGRANT_ROOT = File.dirname(File.expand_path(__FILE__))
-
 VBOXMANAGE_DIR = '"C:/Program Files/Oracle/VirtualBox/vboxmanage"'
-
-# directory that will contain VDI files
+# 	directory that will contain VDI files
+#	Имя папки куда будет размещены диски
 VAGRANT_DISKS_DIRECTORY = "disks"
-
-# controller definition
+# 	controller definition
+#	Имя и тип контроллера
 VAGRANT_CONTROLLER_NAME = "Virtual I/O Device SCSI controller"
 VAGRANT_CONTROLLER_TYPE = "virtio-scsi"
-# VAGRANT_CONTROLLER_NAME = "SATA Controller"
-# VAGRANT_CONTROLLER_TYPE = "AHCI"
-
-# define disks
+# define disks / массив параметров виртуальных дисков
 # The format is filename, size (GB), port (see controller docs)
-local_disks = [
-  { :filename => "disk1", :size => 1, :port => 5 },
-  { :filename => "disk2", :size => 2, :port => 6 },
-  { :filename => "disk3", :size => 1, :port => 25 }
+local_disks = [  #имя		размер (gb)	порт
+  { :filename => "disk1", 	:size => 1, :port => 5 },
+  { :filename => "disk2", 	:size => 2, :port => 6 },
+  { :filename => "disk3", 	:size => 1, :port => 25 }
 ]
 
 # VM array
@@ -87,10 +85,12 @@ HOST_UPGRADE = 'false'
 Vagrant.configure("2") do |config|
 	virt_machines.each do |machine|
 		config.vm.box = HOST_VM_BOX
-
+		
+		# Получаем директорию для дисков из заданных выше переменных
 		disks_directory = File.join(VAGRANT_ROOT, VAGRANT_DISKS_DIRECTORY)
 
 		# create disks before "up" action
+		# создаём диски до того как начинать поднимать виртмашины
 		config.trigger.before :up do |trigger|
 			trigger.name = "Create disks"
 			trigger.ruby do
@@ -145,6 +145,7 @@ Vagrant.configure("2") do |config|
 
 		# cleanup after "destroy" action
 		config.trigger.after :destroy do |trigger|
+
 			trigger.name = "Cleanup operation"
 			trigger.ruby do
 				# the following loop is now obsolete as these files will be removed automatically as machine dependency
