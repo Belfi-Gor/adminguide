@@ -35,15 +35,15 @@ local_disks = [  #имя		размер (gb)	порт
 # Массив виртмашин
 virt_machines=[
   {
-    :hostname => "ceph-1",
+    :hostname => "ceph1",
     :ip => "192.168.2.30"
   },
    {
-     :hostname => "ceph-2",
+     :hostname => "ceph2",
      :ip => "192.168.2.31"
    },
   {
-    :hostname => "ceph-3",
+    :hostname => "ceph3",
     :ip => "192.168.2.32"
   }
 ]
@@ -67,7 +67,8 @@ HOST_BRIDGE = "Intel(R) Ethernet Connection (2) I219-V"
 
 # Which box to use
 # Из какого бокса выкатываемся
-HOST_VM_BOX = "generic/ubuntu2004" 
+#HOST_VM_BOX = "generic/ubuntu2004"
+HOST_VM_BOX = "generic/debian10" 
 
 ################################################
 # Parameters passed to provision script
