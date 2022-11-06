@@ -20,6 +20,9 @@ rm -Rf /etc/hosts
 echo "127.0.0.1	localhost.localdomain	localhost" >> /etc/hosts
 echo "$5	$4.localdomain	$4" >> /etc/hosts
 
+apt update
+apt install sshpass -y
+
 fdisk -l
 (echo n; echo ""; echo ""; echo ""; echo ""; echo w) | fdisk /dev/sdb
 mkfs.ext4 /dev/sdb1
@@ -29,6 +32,15 @@ mount -a
 
 (echo ""; echo ""; echo "") | ssh-keygen
 
+
+ssh-keyscan -H 192.168.2.30 >> ~/.ssh/known_hosts
+sshpass -p 123456789 ssh-copy-id root@192.168.2.30
+
+ssh-keyscan -H 192.168.2.31 >> ~/.ssh/known_hosts
+sshpass -p 123456789 ssh-copy-id root@192.168.2.31
+
+ssh-keyscan -H 192.168.2.32 >> ~/.ssh/known_hosts
+sshpass -p 123456789 ssh-copy-id root@192.168.2.32
 
 echo "*******************************************************************************"
 echo "********************************* END *****************************************"
