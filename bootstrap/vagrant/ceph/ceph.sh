@@ -63,10 +63,10 @@ apt install ntp -y
 
 fdisk -l
 (echo n; echo ""; echo ""; echo ""; echo ""; echo w) | fdisk /dev/sdb
-mkfs.ext4 /dev/sdb1
-mkdir /ceph-osd-1
-echo "/dev/sdb1 /ceph-osd-1 ext4 defaults 0 0" >> /etc/fstab
-mount -a
+#mkfs.ext4 /dev/sdb1
+#mkdir /ceph-osd-1
+#echo "/dev/sdb1 /ceph-osd-1 ext4 defaults 0 0" >> /etc/fstab
+#mount -a
 
 (echo ""; echo ""; echo "") | ssh-keygen
 
@@ -90,14 +90,22 @@ then
     #pip3 install git+https://github.com/ceph/ceph-deploy.git
     apt update
     #apt install ceph-deploy
-
-    #mkdir ceph-cluster
-    #cd ceph-cluster
-    #ceph-deploy new ceph1 ceph2 ceph3
-    #echo "public network = 192.168.2.0/24" >> /home/vagrant/ceph-cluster/ceph.conf
+    apt install python3-pip -y
+    pip3 install ceph-deploy
+    mkdir ceph-cluster
+    ceph-deploy new ceph1 ceph2 ceph3
+    echo "public network = 192.168.2.0/24" >> /home/vagrant/ceph-cluster/ceph.conf
     #echo "#cluster network = 192.168.3.0/24" >> /home/vagrant/ceph-cluster/ceph.conf
 
-    #ceph-deploy install ceph1 ceph2 ceph3
+    ceph-deploy install ceph1 ceph2 ceph3
+    ceph-deploy mon create-initial
+    ceph-deploy admin ceph1 ceph2 ceph3
+    ceph status
+    ceph-deploy mgr create ceph1 ceph2 ceph3
+    ceph-deploy admin ceph1 ceph2 ceph3
+    #ceph-deploy osd create --data /dev/sdb1 ceph1
+    #ceph-deploy osd create --data /dev/sdb1 ceph2
+    #ceph-deploy osd create --data /dev/sdb1 ceph3
 fi
 
 echo "*******************************************************************************"
