@@ -60,9 +60,10 @@ echo "192.168.2.32 ceph3" >> /etc/hosts
 apt update
 apt install sshpass -y
 apt install ntp -y
+apt install lvm2 -y
 
 fdisk -l
-(echo n; echo ""; echo ""; echo ""; echo ""; echo w) | fdisk /dev/sdb
+#(echo n; echo ""; echo ""; echo ""; echo ""; echo w) | fdisk /dev/sdb
 #mkfs.ext4 /dev/sdb1
 #mkdir /ceph-osd-1
 #echo "/dev/sdb1 /ceph-osd-1 ext4 defaults 0 0" >> /etc/fstab
