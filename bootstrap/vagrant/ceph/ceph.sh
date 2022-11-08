@@ -104,9 +104,9 @@ then
     ceph status
     ceph-deploy mgr create ceph1 ceph2 ceph3
     ceph-deploy admin ceph1 ceph2 ceph3
-    #ceph-deploy osd create --data /dev/sdb1 ceph1
-    #ceph-deploy osd create --data /dev/sdb1 ceph2
-    #ceph-deploy osd create --data /dev/sdb1 ceph3
+    ceph-deploy osd create --data /dev/sdb ceph1
+    ceph-deploy osd create --data /dev/sdb ceph2
+    ceph-deploy osd create --data /dev/sdb ceph3
 fi
 
 echo "*******************************************************************************"
