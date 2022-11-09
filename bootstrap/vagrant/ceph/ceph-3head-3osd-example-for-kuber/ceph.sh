@@ -113,7 +113,6 @@ then
     ceph auth get-key client.kube
     echo ""
     echo "admin.key:"
-    #echo ""
 	ceph auth get client.admin 2>&1 |grep "key = " |awk '{print  $3'}
 fi
 
