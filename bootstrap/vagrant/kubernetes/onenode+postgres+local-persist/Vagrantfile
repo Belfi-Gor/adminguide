@@ -6,7 +6,7 @@
 virt_machines=[
   {
     :hostname => "kube-master-1",
-    :ip => "192.168.2.30"
+    :ip => "192.168.2.40"
   }#,
 #   {
 #     :hostname => "kube-master-2",
