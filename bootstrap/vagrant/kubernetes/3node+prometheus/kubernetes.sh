@@ -86,8 +86,11 @@ then
   ./get_helm.sh
 
   export KUBEADMJOINCOMMAND=$(kubeadm token create --print-join-command)
+
+  echo "******************************* ADDING SLAVE 1 ********************************"
   ssh root@kube-slave-1 $KUBEADMJOINCOMMAND
-  ssh root@kube-slave-1 $KUBEADMJOINCOMMAND
+  echo "******************************* ADDING SLAVE 2 ********************************"
+  ssh root@kube-slave-2 $KUBEADMJOINCOMMAND
   #kubectl taint nodes --all node-role.kubernetes.io/control-plane-
 fi
 
