@@ -18,6 +18,27 @@ rm -Rf /etc/hosts
 
 echo "127.0.0.1	localhost.localdomain	localhost" >> /etc/hosts
 echo "$5	$4.localdomain	$4" >> /etc/hosts
+echo "192.168.2.40 kube-master-1" >> /etc/hosts
+echo "192.168.2.41 kube-slave-1" >> /etc/hosts
+echo "192.168.2.42 kube-slave-2" >> /etc/hosts
+
+apt update
+apt install sshpass -y
+
+echo "*******************************************************************************"
+echo "************************ PREPARING KEYS FOW MASTER ****************************"
+echo "*******************************************************************************"
+
+(echo ""; echo ""; echo "") | ssh-keygen
+
+ssh-keyscan -H kube-slave-2 >> ~/.ssh/known_hosts
+sshpass -p 123456789 ssh-copy-id root@kube-slave-2
+
+ssh-keyscan -H kube-slave-1 >> ~/.ssh/known_hosts
+sshpass -p 123456789 ssh-copy-id root@kube-slave-1
+
+ssh-keyscan -H kube-master-1 >> ~/.ssh/known_hosts
+sshpass -p 123456789 ssh-copy-id root@kube-master-1
 
 echo "*******************************************************************************"
 echo "************************** INSTALLING KUBERNETES ******************************"
@@ -48,13 +69,13 @@ systemctl restart containerd
 swapoff -a
 sed -i '/swap/d' /etc/fstab
 mount -a
-kubeadm config images pull
+#kubeadm config images pull
 
-echo "*******************************************************************************"
-echo "********************** ONE NODE CLUSTER CONFIGURATION *************************"
-echo "*******************************************************************************"
 if [[ $HOSTNAME = "kube-master-1" ]]
 then
+  echo "*******************************************************************************"
+  echo "************************ 3 NODE CLUSTER CONFIGURATION *************************"
+  echo "*******************************************************************************"
   kubeadm init --pod-network-cidr=192.168.0.0/16 --apiserver-advertise-address=192.168.2.40
   mkdir -p $HOME/.kube
   sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
@@ -63,7 +84,11 @@ then
   curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
   chmod 700 get_helm.sh
   ./get_helm.sh
-  kubectl taint nodes --all node-role.kubernetes.io/control-plane-
+
+  export KUBEADMJOINCOMMAND=$(kubeadm token create --print-join-command)
+  ssh root@kube-slave-1 $KUBEADMJOINCOMMAND
+  ssh root@kube-slave-1 $KUBEADMJOINCOMMAND
+  #kubectl taint nodes --all node-role.kubernetes.io/control-plane-
 fi
 
 # echo "*******************************************************************************"
