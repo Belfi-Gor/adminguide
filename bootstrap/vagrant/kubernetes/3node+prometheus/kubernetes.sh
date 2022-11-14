@@ -92,6 +92,12 @@ then
   echo "******************************* ADDING SLAVE 2 ********************************"
   ssh root@kube-slave-2 $KUBEADMJOINCOMMAND
   #kubectl taint nodes --all node-role.kubernetes.io/control-plane-
+
+  #https://artifacthub.io/packages/helm/mesosphere/prometheus-operator
+  # helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+  # helm repo add stable https://charts.helm.sh/stable
+  # helm repo update
+  # helm install netology-prometheus-demo prometheus-community/kube-prometheus-stack
 fi
 
 # echo "*******************************************************************************"
