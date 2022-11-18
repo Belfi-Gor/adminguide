@@ -94,67 +94,6 @@ then
   #kubectl taint nodes --all node-role.kubernetes.io/control-plane-
 fi
 
-# echo "*******************************************************************************"
-# echo "************************** POSTGRESQL + PV EXAMPLE ****************************"
-# echo "*******************************************************************************"
-# echo 'kind: StorageClass' > /home/test/storage.yaml
-# echo 'apiVersion: storage.k8s.io/v1' >> /home/test/storage.yaml
-# echo 'metadata:' >> /home/test/storage.yaml
-# echo '  name: local-storage' >> /home/test/storage.yaml
-# echo 'provisioner: kubernetes.io/no-provisioner' >> /home/test/storage.yaml
-# echo 'volumeBindingMode: WaitForFirstConsumer' >> /home/test/storage.yaml
-
-# kubectl apply -f /home/test/storage.yaml
-# mkdir -p /devkube/postgresql
-
-
-# echo 'apiVersion: v1' > /home/test/pv.yaml
-# echo 'kind: PersistentVolume' >> /home/test/pv.yaml
-# echo 'metadata:' >> /home/test/pv.yaml
-# echo '  name: pv-for-pg' >> /home/test/pv.yaml
-# echo '  labels:' >> /home/test/pv.yaml
-# echo '    type: local' >> /home/test/pv.yaml
-# echo 'spec:' >> /home/test/pv.yaml
-# echo '  capacity:' >> /home/test/pv.yaml
-# echo '    storage: 4Gi' >> /home/test/pv.yaml
-# echo '  volumeMode: Filesystem' >> /home/test/pv.yaml
-# echo '  accessModes:' >> /home/test/pv.yaml
-# echo '  - ReadWriteOnce' >> /home/test/pv.yaml
-# echo '  persistentVolumeReclaimPolicy: Retain' >> /home/test/pv.yaml
-# echo '  storageClassName: local-storage' >> /home/test/pv.yaml
-# echo '  local:' >> /home/test/pv.yaml
-# echo '    path: /devkube/postgresql' >> /home/test/pv.yaml
-# echo '  nodeAffinity:' >> /home/test/pv.yaml
-# echo '    required:' >> /home/test/pv.yaml
-# echo '      nodeSelectorTerms:' >> /home/test/pv.yaml
-# echo '      - matchExpressions:' >> /home/test/pv.yaml
-# echo '        - key: kubernetes.io/hostname' >> /home/test/pv.yaml
-# echo '          operator: In' >> /home/test/pv.yaml
-# echo '          values:' >> /home/test/pv.yaml
-# echo '          - kube-master-1' >> /home/test/pv.yaml
-
-# kubectl apply -f /home/test/pv.yaml
-
-
-# echo 'kind: PersistentVolumeClaim' > /home/test/pvc.yaml
-# echo 'apiVersion: v1' >> /home/test/pvc.yaml
-# echo 'metadata:' >> /home/test/pvc.yaml
-# echo '  name: pg-pvc' >> /home/test/pvc.yaml
-# echo 'spec:' >> /home/test/pvc.yaml
-# echo '  storageClassName: "local-storage"' >> /home/test/pvc.yaml
-# echo '  accessModes:' >> /home/test/pvc.yaml
-# echo '  - ReadWriteOnce' >> /home/test/pvc.yaml
-# echo '  resources:' >> /home/test/pvc.yaml
-# echo '    requests:' >> /home/test/pvc.yaml
-# echo '      storage: 4Gi' >> /home/test/pvc.yaml
-
-# kubectl apply -f /home/test/pvc.yaml
-
-# helm repo add bitnami https://charts.bitnami.com/bitnami
-
-# helm install dev-pg bitnami/postgresql --set primary.persistence.existingClaim=pg-pvc,auth.postgresPassword=pgpass
-
-
 echo "*******************************************************************************"
 echo "***************************** POSTCONFIGURATION *******************************"
 echo "*******************************************************************************"
