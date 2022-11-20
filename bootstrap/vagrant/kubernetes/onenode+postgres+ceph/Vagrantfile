@@ -1,6 +1,8 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+# Use with ceph example: \bootstrap\vagrant\ceph\ceph-3head-3osd-example-for-kuber
+
 # VM array
 # Массив виртмашин
 virt_machines=[
