@@ -94,11 +94,21 @@ then
   ssh root@kube-slave-2 $KUBEADMJOINCOMMAND
   #kubectl taint nodes --all node-role.kubernetes.io/control-plane-
 
-  #https://artifacthub.io/packages/helm/mesosphere/prometheus-operator
-  # helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-  # helm repo add stable https://charts.helm.sh/stable
-  # helm repo update
-  # helm install netology-prometheus-demo prometheus-community/kube-prometheus-stack
+  # https://artifacthub.io/packages/helm/mesosphere/prometheus-operator
+  helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+  helm repo update
+  helm install prometheus-adminguide-demo prometheus-community/kube-prometheus-stack
+
+  # kubectl edit service/prometheus-adminguide-demo-grafana
+  # Change type from ClusterIP to NodePort
+  # kubectl get all
+  # Check that service starts look like this:
+  #   service/prometheus-demo-grafana NodePort 10.97.24.102 <none> 80:31414/TCP
+  # Try to connect from your notebook to any node to port 31414 (you will have different port number)
+  # grafana login - admin \ prom-operator
+
+  # Same way you can access to another services by changing ClusterIP to NodePort "kubectl edit service <name>" like:
+  #   kubectl edit service/prometheus-adminguide-demo-grafana
 fi
 
 echo "*******************************************************************************"
