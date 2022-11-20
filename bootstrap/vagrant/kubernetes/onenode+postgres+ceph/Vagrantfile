@@ -1,12 +1,15 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+# Description:
+# This example creates 1 VM with Kubernetes, untain contol-plain role from this node, deploys posgresql pod on this node and create PresistentVolume with volumeMode: Filesystem 
+
 # VM array
 # Массив виртмашин
 virt_machines=[
   {
     :hostname => "kube-master-1",
-    :ip => "192.168.2.30"
+    :ip => "192.168.2.40"
   }#,
 #   {
 #     :hostname => "kube-master-2",
