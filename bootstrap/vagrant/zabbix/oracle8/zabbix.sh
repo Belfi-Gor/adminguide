@@ -34,19 +34,19 @@ systemctl status postgresql-13
 # echo "************************** INSTALLING ZABBIX-SERVER ***************************"
 # echo "*******************************************************************************"
 rpm -Uvh https://repo.zabbix.com/zabbix/5.4/rhel/8/x86_64/zabbix-release-5.4-1.el8.noarch.rpm
-dnf install -y zabbix-server-pgsql-5.4.4-1.el8 zabbix-web-pgsql-5.4.4-1.el8 zabbix-nginx-conf-5.4.4-1.el8 zabbix-agent-5.4.4-1.el8
+dnf install -y zabbix-server-pgsql-5.4.4-1.el8 zabbix-web-pgsql-5.4.4-1.el8 zabbix-nginx-conf-5.4.4-1.el8 zabbix-sql-scripts-5.4.4-1.el8
 su - postgres -c 'psql --command "CREATE USER zabbix WITH PASSWORD '\'123456789\'';"'
 su - postgres -c 'psql --command "CREATE DATABASE zabbix OWNER zabbix;"'
-zcat /usr/share/doc/zabbix-server-pgsql*/create.sql.gz | sudo -u zabbix psql zabbix
-sed -i 's/# listen 80;/listen 80;/g' /etc/nginx/conf.d/zabbix.conf
-sed -i 's/# server_name example.com;/server_name example.com;/g' /etc/nginx/conf.d/zabbix.conf
-systemctl restart zabbix-server zabbix-agent nginx php-fpm
-systemctl enable zabbix-server zabbix-agent nginx php-fpm 
+zcat /usr/share/doc/zabbix-sql-scripts/postgresql/create.sql.gz | sudo -u zabbix psql zabbix
+sed -i 's/#        listen 80;/listen 80;/g' /etc/nginx/conf.d/zabbix.conf
+sed -i 's/#        server_name example.com;/server_name example.com;/g' /etc/nginx/conf.d/zabbix.conf
+systemctl restart zabbix-server nginx php-fpm
+systemctl enable zabbix-server nginx php-fpm 
 #sed -i 's/; php_value[date.timezone] = Europe/Riga/listen 80;/g' /etc/nginx/conf.d/zabbix.conf
 
 # sed -i "s/Server=127.0.0.1/Server=$6/g" /etc/zabbix/zabbix_agentd.conf
 
-
+#su - postgres -c 'psql --command "GRANT ALL PRIVILEGES ON DATABASE zabbix TO zabbix;"'
 
 # echo 'UserParameter=custom_echo[*],echo $1' >> /etc/zabbix/zabbix_agentd.conf
 # echo 'UserParameter=my_script[*], python3 /etc/zabbix/test_python_script.py $1 $2' > /etc/zabbix/zabbix_agentd.d/test_user_parameter.conf
