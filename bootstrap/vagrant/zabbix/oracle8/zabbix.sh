@@ -20,12 +20,27 @@ echo "127.0.0.1	localhost.localdomain	localhost" >> /etc/hosts
 echo "$5	$4.localdomain	$4" >> /etc/hosts
 
 echo "*******************************************************************************"
-echo "************************** INSTALLING ZABBIX-AGENT ****************************"
+echo "************************** INSTALLING POSTGRESQL ***************************"
+echo "*******************************************************************************"
+dnf install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+dnf -qy module disable postgresql
+dnf install -y postgresql13-server
+/usr/pgsql-13/bin/postgresql-13-setup initdb
+systemctl enable postgresql-13
+systemctl start postgresql-13
+systemctl status postgresql-13
+
+echo "*******************************************************************************"
+echo "************************** INSTALLING ZABBIX-SERVER ***************************"
 echo "*******************************************************************************"
 rpm -Uvh https://repo.zabbix.com/zabbix/5.4/rhel/8/x86_64/zabbix-release-5.4-1.el8.noarch.rpm
 dnf install -y zabbix-server-pgsql-5.4.4-1.el8 zabbix-web-pgsql-5.4.4-1.el8 zabbix-nginx-conf-5.4.4-1.el8 zabbix-agent-5.4.4-1.el8
 
-# sed -i "s/Server=127.0.0.1/Server=$6/g" /etc/zabbix/zabbix_agentd.conf
+sed -i "s/Server=127.0.0.1/Server=$6/g" /etc/zabbix/zabbix_agentd.conf
+
+su - postgres -c 'psql --command "CREATE USER zabbix WITH PASSWORD '\'123456789\'';"'
+su - postgres -c 'psql --command "CREATE DATABASE zabbix OWNER zabbix;"'
+
 # echo 'UserParameter=custom_echo[*],echo $1' >> /etc/zabbix/zabbix_agentd.conf
 # echo 'UserParameter=my_script[*], python3 /etc/zabbix/test_python_script.py $1 $2' > /etc/zabbix/zabbix_agentd.d/test_user_parameter.conf
 # systemctl restart zabbix-agent
