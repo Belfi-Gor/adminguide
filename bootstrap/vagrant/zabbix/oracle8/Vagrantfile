@@ -46,7 +46,7 @@ HOST_VM_BOX = "eurolinux-vagrant/oracle-linux-8"
 
 # Script to use while provisioning
 # Скрипт который будет запущен в процессе настройки
-HOST_CONFIIG_SCRIPT = "zabbix-agent.sh" 
+HOST_CONFIIG_SCRIPT = "zabbix.sh" 
 
 # Additional user
 # Дополнительный пользователь
@@ -73,7 +73,7 @@ Vagrant.configure("2") do |config|
 				current_vm.gui = HOST_SHOW_GUI
 				current_vm.memory = HOST_MEMMORY
 				current_vm.cpus = HOST_CPUS
-				#override.vm.provision "shell", path: 'zabbix-agent.sh', args: [	'test', 	'123456789',	'false', 	machine[:hostname], 	machine[:ip],	'192.168.0.138'], run: "once"
+				override.vm.provision "shell", path: HOST_CONFIIG_SCRIPT, args: [	'test', 	'123456789',	'false', 	machine[:hostname], 	machine[:ip],	'192.168.0.138'], run: "once"
 			end
 		end
 	end
