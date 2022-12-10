@@ -38,8 +38,8 @@ dnf install -y zabbix-server-pgsql-5.4.4-1.el8 zabbix-web-pgsql-5.4.4-1.el8 zabb
 su - postgres -c 'psql --command "CREATE USER zabbix WITH PASSWORD '\'123456789\'';"'
 su - postgres -c 'psql --command "CREATE DATABASE zabbix OWNER zabbix;"'
 zcat /usr/share/doc/zabbix-sql-scripts/postgresql/create.sql.gz | sudo -u zabbix psql zabbix
-sed -i 's/#        listen 80;/listen 80;/g' /etc/nginx/conf.d/zabbix.conf
-sed -i 's/#        server_name example.com;/server_name example.com;/g' /etc/nginx/conf.d/zabbix.conf
+sed -i 's/#        listen          80;/        listen          80;/g' /etc/nginx/conf.d/zabbix.conf
+sed -i 's/#        server_name     example.com;/        server_name     example.com;/g' /etc/nginx/conf.d/zabbix.conf
 systemctl restart zabbix-server nginx php-fpm
 systemctl enable zabbix-server nginx php-fpm 
 #sed -i 's/; php_value[date.timezone] = Europe/Riga/listen 80;/g' /etc/nginx/conf.d/zabbix.conf
