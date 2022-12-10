@@ -33,13 +33,22 @@ then
     echo "*******************************************************************************"
     echo "************************** INSTALLING POSTGRESQL ***************************"
     echo "*******************************************************************************"
-    dnf install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm
-    dnf -qy module disable postgresql
-    dnf install -y postgresql13-server
-    /usr/pgsql-13/bin/postgresql-13-setup initdb
-    systemctl enable postgresql-13
-    systemctl start postgresql-13
-    systemctl status postgresql-13
+    # dnf install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+    # dnf -qy module disable postgresql
+    # dnf install -y postgresql13-server
+    # /usr/pgsql-13/bin/postgresql-13-setup initdb
+    # systemctl enable postgresql-13
+    # systemctl start postgresql-13
+    # systemctl status postgresql-13
+
+    sudo dnf install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+    sudo dnf -qy module disable postgresql
+    sudo dnf install -y postgresql14-server
+    sudo /usr/pgsql-14/bin/postgresql-14-setup initdb
+    sudo systemctl enable postgresql-14
+    sudo systemctl start postgresql-14
+    systemctl status postgresql-14
+
 
     echo "*******************************************************************************"
     echo "************************** INSTALLING ZABBIX-SERVER ***************************"

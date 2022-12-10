@@ -5,7 +5,7 @@
 # Массив виртмашин
 virt_machines=[
   {
-    :hostname => "zabbixserver1",
+    :hostname => "zabbixserver2",
     :ip => "192.168.187.20"
   }#,
 #   {
@@ -73,7 +73,7 @@ Vagrant.configure("2") do |config|
 				current_vm.gui = HOST_SHOW_GUI
 				current_vm.memory = HOST_MEMMORY
 				current_vm.cpus = HOST_CPUS
-				override.vm.provision "shell", path: HOST_CONFIIG_SCRIPT, args: [	'test', 	'123456789',	'false', 	machine[:hostname], 	machine[:ip],	'192.168.0.138'], run: "once"
+				override.vm.provision "shell", path: HOST_CONFIIG_SCRIPT, args: [	'test', 	'123456789',	'false', 	machine[:hostname], 	machine[:ip],	ZABBIX_SERVER_IP], run: "once"
 			end
 		end
 	end
