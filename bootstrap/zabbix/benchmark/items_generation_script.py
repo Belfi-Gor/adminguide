@@ -6,6 +6,6 @@
 
 import json
 result = []
-result.append({"test1":1,"test2":2})
-result.append({"test3":3,"test4":4})
+result.append({"{#test1}":test1,"{#test2}":test2})
+result.append({"{#test3}":test3,"{#test4}":test4})
 print(json.dumps(result))
