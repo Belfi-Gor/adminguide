@@ -19,29 +19,41 @@ rm -Rf /etc/hosts
 echo "127.0.0.1	localhost.localdomain	localhost" >> /etc/hosts
 echo "$5	$4.localdomain	$4" >> /etc/hosts
 
-# echo "*******************************************************************************"
-# echo "************************** INSTALLING POSTGRESQL ***************************"
-# echo "*******************************************************************************"
-dnf install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm
-dnf -qy module disable postgresql
-dnf install -y postgresql13-server
-/usr/pgsql-13/bin/postgresql-13-setup initdb
-systemctl enable postgresql-13
-systemctl start postgresql-13
-systemctl status postgresql-13
-
-# echo "*******************************************************************************"
-# echo "************************** INSTALLING ZABBIX-SERVER ***************************"
-# echo "*******************************************************************************"
+echo "*******************************************************************************"
+echo "************************** INSTALLING ZABBIX-AGENT ***************************"
+echo "*******************************************************************************"
 rpm -Uvh https://repo.zabbix.com/zabbix/5.4/rhel/8/x86_64/zabbix-release-5.4-1.el8.noarch.rpm
-dnf install -y zabbix-server-pgsql-5.4.4-1.el8 zabbix-web-pgsql-5.4.4-1.el8 zabbix-nginx-conf-5.4.4-1.el8 zabbix-sql-scripts-5.4.4-1.el8
-su - postgres -c 'psql --command "CREATE USER zabbix WITH PASSWORD '\'123456789\'';"'
-su - postgres -c 'psql --command "CREATE DATABASE zabbix OWNER zabbix;"'
-zcat /usr/share/doc/zabbix-sql-scripts/postgresql/create.sql.gz | sudo -u zabbix psql zabbix
-sed -i 's/#        listen          80;/        listen          80;/g' /etc/nginx/conf.d/zabbix.conf
-sed -i 's/#        server_name     example.com;/        server_name     example.com;/g' /etc/nginx/conf.d/zabbix.conf
-systemctl restart zabbix-server nginx php-fpm
-systemctl enable zabbix-server nginx php-fpm 
+dnf install -y zabbix-agent-5.4.4-1.el8
+sed -i "s/Server=127.0.0.1/Server=127.0.0.1,$6/g" /etc/zabbix/zabbix_agentd.conf
+systemctl restart zabbix-agent
+systemctl enable zabbix-agent
+
+if [[ $HOSTNAME = "zabbixserver1" ]]
+then
+    echo "*******************************************************************************"
+    echo "************************** INSTALLING POSTGRESQL ***************************"
+    echo "*******************************************************************************"
+    dnf install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+    dnf -qy module disable postgresql
+    dnf install -y postgresql13-server
+    /usr/pgsql-13/bin/postgresql-13-setup initdb
+    systemctl enable postgresql-13
+    systemctl start postgresql-13
+    systemctl status postgresql-13
+
+    echo "*******************************************************************************"
+    echo "************************** INSTALLING ZABBIX-SERVER ***************************"
+    echo "*******************************************************************************"
+    rpm -Uvh https://repo.zabbix.com/zabbix/5.4/rhel/8/x86_64/zabbix-release-5.4-1.el8.noarch.rpm
+    dnf install -y zabbix-server-pgsql-5.4.4-1.el8 zabbix-web-pgsql-5.4.4-1.el8 zabbix-nginx-conf-5.4.4-1.el8 zabbix-sql-scripts-5.4.4-1.el8
+    su - postgres -c 'psql --command "CREATE USER zabbix WITH PASSWORD '\'123456789\'';"'
+    su - postgres -c 'psql --command "CREATE DATABASE zabbix OWNER zabbix;"'
+    zcat /usr/share/doc/zabbix-sql-scripts/postgresql/create.sql.gz | sudo -u zabbix psql zabbix
+    sed -i 's/#        listen          80;/        listen          80;/g' /etc/nginx/conf.d/zabbix.conf
+    sed -i 's/#        server_name     example.com;/        server_name     example.com;/g' /etc/nginx/conf.d/zabbix.conf
+    systemctl restart zabbix-server nginx php-fpm
+    systemctl enable zabbix-server nginx php-fpm
+fi
 #sed -i 's/; php_value[date.timezone] = Europe/Riga/listen 80;/g' /etc/nginx/conf.d/zabbix.conf
 
 # sed -i "s/Server=127.0.0.1/Server=$6/g" /etc/zabbix/zabbix_agentd.conf
