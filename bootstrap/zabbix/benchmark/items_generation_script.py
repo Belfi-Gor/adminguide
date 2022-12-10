@@ -1,5 +1,10 @@
 import json
-result = []
-result.append({"{#TESTITEM1}":"test1","{#TESTITEM2}":"test2"})
-result.append({"{#TESTITEM1}":"test3","{#TESTITEM2}":"test4"})
-print(json.dumps(result))
+import sys
+if (sys.argv[1] == '-generate_items'):
+    result = []
+    for i in int(sys.argv[2]):
+        result.append({"{#TESTITEM}": f("test_value{i}")})
+    
+    print(json.dumps(result))
+else: # In other cases
+        print(f"unknown input: {sys.argv[1]}") # print unknown input
