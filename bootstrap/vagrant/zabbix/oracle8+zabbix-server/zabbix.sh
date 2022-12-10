@@ -33,21 +33,26 @@ then
     echo "*******************************************************************************"
     echo "************************** INSTALLING POSTGRESQL ***************************"
     echo "*******************************************************************************"
-    # dnf install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm
-    # dnf -qy module disable postgresql
-    # dnf install -y postgresql13-server
-    # /usr/pgsql-13/bin/postgresql-13-setup initdb
-    # systemctl enable postgresql-13
-    # systemctl start postgresql-13
-    # systemctl status postgresql-13
+    #dnf install -y libpq5
+    dnf install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+    dnf -qy module disable postgresql
+    dnf install -y postgresql13-server
+    /usr/pgsql-13/bin/postgresql-13-setup initdb
+    systemctl enable postgresql-13
+    systemctl start postgresql-13
+    systemctl status postgresql-13
 
-    sudo dnf install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm
-    sudo dnf -qy module disable postgresql
-    sudo dnf install -y postgresql14-server
-    sudo /usr/pgsql-14/bin/postgresql-14-setup initdb
-    sudo systemctl enable postgresql-14
-    sudo systemctl start postgresql-14
-    systemctl status postgresql-14
+    rpm -e --nodeps libpq5-15.1-42PGDG.rhel8.x86_64
+    rpm -i https://rpmfind.net/linux/centos/8-stream/AppStream/x86_64/os/Packages/libpq-13.3-1.el8_4.x86_64.rpm
+    rm /usr/pgsql-14/lib/libpq.so.5
+
+    # sudo dnf install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+    # sudo dnf -qy module disable postgresql
+    # sudo dnf install -y postgresql14-server
+    # sudo /usr/pgsql-14/bin/postgresql-14-setup initdb
+    # sudo systemctl enable postgresql-14
+    # sudo systemctl start postgresql-14
+    # systemctl status postgresql-14
 
 
     echo "*******************************************************************************"
@@ -58,8 +63,9 @@ then
     su - postgres -c 'psql --command "CREATE USER zabbix WITH PASSWORD '\'123456789\'';"'
     su - postgres -c 'psql --command "CREATE DATABASE zabbix OWNER zabbix;"'
     zcat /usr/share/doc/zabbix-sql-scripts/postgresql/create.sql.gz | sudo -u zabbix psql zabbix
+    sed -i "s/# DBPassword=/DBPassword=123456789/g" /etc/zabbix/zabbix_server.conf
     sed -i 's/#        listen          80;/        listen          80;/g' /etc/nginx/conf.d/zabbix.conf
-    sed -i 's/#        server_name     example.com;/        server_name     example.com;/g' /etc/nginx/conf.d/zabbix.conf
+    sed -i 's/#        server_name     example.com;/        server_name     zabbix.lan;/g' /etc/nginx/conf.d/zabbix.conf
     systemctl restart zabbix-server nginx php-fpm
     systemctl enable zabbix-server nginx php-fpm
 fi
