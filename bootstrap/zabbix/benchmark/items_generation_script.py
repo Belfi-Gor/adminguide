@@ -7,4 +7,4 @@ if (sys.argv[1] == '-generate_items'):
     
     print(json.dumps(result))
 else: # In other cases
-        print(f"unknown input: {sys.argv[1]}") # print unknown input
+        print(f"unknown input: {sys.argv[1]}") # print unknown input 
