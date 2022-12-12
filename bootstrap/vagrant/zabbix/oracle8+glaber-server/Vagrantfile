@@ -5,7 +5,7 @@
 # Массив виртмашин
 virt_machines=[
   {
-    :hostname => "zabbixserver1",
+    :hostname => "glaberserver1",
     :ip => "192.168.192.20"
   }#,
 #   {
@@ -46,7 +46,7 @@ HOST_VM_BOX = "eurolinux-vagrant/oracle-linux-8"
 
 # Script to use while provisioning
 # Скрипт который будет запущен в процессе настройки
-HOST_CONFIIG_SCRIPT = "zabbix.sh" 
+HOST_CONFIIG_SCRIPT = "glaber.sh" 
 
 # Additional user
 # Дополнительный пользователь
