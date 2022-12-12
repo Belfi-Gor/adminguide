@@ -30,8 +30,30 @@ echo "$5	$4.localdomain	$4" >> /etc/hosts
 # echo 'zabbix_get -s 127.0.0.1 -p 10050 -k "system.cpu.load[all,avg1]"'
 # systemctl enable zabbix-agent
 
-# if [[ $HOSTNAME = "zabbixserver1" ]]
-# then
+if [ $HOSTNAME = "cpostgres1" ] || [ $HOSTNAME = "cpostgres2" ]
+then
+    echo "*******************************************************************************"
+    echo "************************** INSTALLING POSTGRESQL ***************************"
+    echo "*******************************************************************************"
+    dnf install -y libpq5
+    dnf install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+    dnf -qy module disable postgresql
+    dnf install -y postgresql13-server
+    /usr/pgsql-13/bin/postgresql-13-setup initdb
+    systemctl enable postgresql-13
+    systemctl start postgresql-13
+    systemctl status postgresql-13
+
+    rpm -Uvh https://repo.zabbix.com/zabbix/5.4/rhel/8/x86_64/zabbix-release-5.4-1.el8.noarch.rpm
+    dnf install -y zabbix-sql-scripts-5.4.4-1.el8 zabbix-server-pgsql-5.4.4-1.el8
+
+    su - postgres -c 'psql --command "CREATE USER zabbix WITH PASSWORD '\'123456789\'';"'
+    su - postgres -c 'psql --command "CREATE DATABASE zabbix OWNER zabbix;"'
+    zcat /usr/share/doc/zabbix-sql-scripts/postgresql/create.sql.gz | sudo -u zabbix psql zabbix
+fi
+
+if [ $HOSTNAME = "czabbixserver1" ] || [ $HOSTNAME = "czabbixserver2" ] || [ $HOSTNAME = "czabbixserver3" ]
+then
     # echo "*******************************************************************************"
     # echo "************************** INSTALLING POSTGRESQL ***************************"
     # echo "*******************************************************************************"
@@ -62,14 +84,14 @@ echo "$5	$4.localdomain	$4" >> /etc/hosts
     echo "*******************************************************************************"
     rpm -Uvh https://repo.zabbix.com/zabbix/5.4/rhel/8/x86_64/zabbix-release-5.4-1.el8.noarch.rpm
     dnf install -y zabbix-server-pgsql-5.4.4-1.el8 zabbix-web-pgsql-5.4.4-1.el8 zabbix-nginx-conf-5.4.4-1.el8 zabbix-sql-scripts-5.4.4-1.el8
-    su - postgres -c 'psql --command "CREATE USER zabbix WITH PASSWORD '\'123456789\'';"'
-    su - postgres -c 'psql --command "CREATE DATABASE zabbix OWNER zabbix;"'
-    zcat /usr/share/doc/zabbix-sql-scripts/postgresql/create.sql.gz | sudo -u zabbix psql zabbix
+    # su - postgres -c 'psql --command "CREATE USER zabbix WITH PASSWORD '\'123456789\'';"'
+    # su - postgres -c 'psql --command "CREATE DATABASE zabbix OWNER zabbix;"'
+    # zcat /usr/share/doc/zabbix-sql-scripts/postgresql/create.sql.gz | sudo -u zabbix psql zabbix
     sed -i "s/# DBPassword=/DBPassword=123456789/g" /etc/zabbix/zabbix_server.conf
-    sed -i 's/#        listen          80;/        listen          80;/g' /etc/nginx/conf.d/zabbix.conf
-    sed -i 's/#        server_name     example.com;/        server_name     zabbix.lan;/g' /etc/nginx/conf.d/zabbix.conf
-    systemctl restart zabbix-server nginx php-fpm
-    systemctl enable zabbix-server nginx php-fpm
+    # sed -i 's/#        listen          80;/        listen          80;/g' /etc/nginx/conf.d/zabbix.conf
+    # sed -i 's/#        server_name     example.com;/        server_name     zabbix.lan;/g' /etc/nginx/conf.d/zabbix.conf
+    # systemctl restart zabbix-server nginx php-fpm
+    # systemctl enable zabbix-server nginx php-fpm
 # fi
 #sed -i 's/; php_value[date.timezone] = Europe/Riga/listen 80;/g' /etc/nginx/conf.d/zabbix.conf
 

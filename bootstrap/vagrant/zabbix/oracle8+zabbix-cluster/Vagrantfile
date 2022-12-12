@@ -4,18 +4,22 @@
 # VM array
 # Массив виртмашин
 virt_machines=[
-  {
-    :hostname => "zabbixserver1",
-    :ip => "192.168.192.20"
-  },
-  {
-    :hostname => "zabbixserver2",
-    :ip => "192.168.216.21"
-  },
-  {
-    :hostname => "zabbixserver3",
-    :ip => "192.168.216.22"
-  }
+	{
+		:hostname => "cpostgres1",
+		:ip => "192.168.216.30"
+	},
+	{
+    	:hostname => "czabbixserver1",
+    	:ip => "192.168.192.20"
+  	},
+  	{
+    	:hostname => "czabbixserver2",
+    	:ip => "192.168.216.21"
+  	},
+  	{
+    	:hostname => "czabbixserver3",
+    	:ip => "192.168.216.22"
+  	}
 ]
 
 # Show VM GUI
