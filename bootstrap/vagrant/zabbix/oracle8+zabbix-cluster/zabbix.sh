@@ -19,34 +19,34 @@ rm -Rf /etc/hosts
 echo "127.0.0.1	localhost.localdomain	localhost" >> /etc/hosts
 echo "$5	$4.localdomain	$4" >> /etc/hosts
 
-echo "*******************************************************************************"
-echo "************************** INSTALLING ZABBIX-AGENT ***************************"
-echo "*******************************************************************************"
-rpm -Uvh https://repo.zabbix.com/zabbix/5.4/rhel/8/x86_64/zabbix-release-5.4-1.el8.noarch.rpm
-dnf install -y zabbix-agent-5.4.4-1.el8
-sed -i "s/Server=127.0.0.1/Server=127.0.0.1,$6/g" /etc/zabbix/zabbix_agentd.conf
-systemctl restart zabbix-agent zabbix-get
-echo "zabbix-get usage reminder:"
-echo 'zabbix_get -s 127.0.0.1 -p 10050 -k "system.cpu.load[all,avg1]"'
-systemctl enable zabbix-agent
+# echo "*******************************************************************************"
+# echo "************************** INSTALLING ZABBIX-AGENT ***************************"
+# echo "*******************************************************************************"
+# rpm -Uvh https://repo.zabbix.com/zabbix/5.4/rhel/8/x86_64/zabbix-release-5.4-1.el8.noarch.rpm
+# dnf install -y zabbix-agent-5.4.4-1.el8
+# sed -i "s/Server=127.0.0.1/Server=127.0.0.1,$6/g" /etc/zabbix/zabbix_agentd.conf
+# systemctl restart zabbix-agent zabbix-get
+# echo "zabbix-get usage reminder:"
+# echo 'zabbix_get -s 127.0.0.1 -p 10050 -k "system.cpu.load[all,avg1]"'
+# systemctl enable zabbix-agent
 
-if [[ $HOSTNAME = "zabbixserver1" ]]
-then
-    echo "*******************************************************************************"
-    echo "************************** INSTALLING POSTGRESQL ***************************"
-    echo "*******************************************************************************"
+# if [[ $HOSTNAME = "zabbixserver1" ]]
+# then
+    # echo "*******************************************************************************"
+    # echo "************************** INSTALLING POSTGRESQL ***************************"
+    # echo "*******************************************************************************"
     #dnf install -y libpq5
-    dnf install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm
-    dnf -qy module disable postgresql
-    dnf install -y postgresql13-server
-    /usr/pgsql-13/bin/postgresql-13-setup initdb
-    systemctl enable postgresql-13
-    systemctl start postgresql-13
-    systemctl status postgresql-13
+    # dnf install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+    # dnf -qy module disable postgresql
+    # dnf install -y postgresql13-server
+    # /usr/pgsql-13/bin/postgresql-13-setup initdb
+    # systemctl enable postgresql-13
+    # systemctl start postgresql-13
+    # systemctl status postgresql-13
 
-    rpm -e --nodeps libpq5-15.1-42PGDG.rhel8.x86_64
-    rpm -i https://rpmfind.net/linux/centos/8-stream/AppStream/x86_64/os/Packages/libpq-13.3-1.el8_4.x86_64.rpm
-    rm /usr/pgsql-14/lib/libpq.so.5
+    # rpm -e --nodeps libpq5-15.1-42PGDG.rhel8.x86_64
+    # rpm -i https://rpmfind.net/linux/centos/8-stream/AppStream/x86_64/os/Packages/libpq-13.3-1.el8_4.x86_64.rpm
+    # rm /usr/pgsql-14/lib/libpq.so.5
 
     # sudo dnf install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm
     # sudo dnf -qy module disable postgresql
@@ -70,7 +70,7 @@ then
     sed -i 's/#        server_name     example.com;/        server_name     zabbix.lan;/g' /etc/nginx/conf.d/zabbix.conf
     systemctl restart zabbix-server nginx php-fpm
     systemctl enable zabbix-server nginx php-fpm
-fi
+# fi
 #sed -i 's/; php_value[date.timezone] = Europe/Riga/listen 80;/g' /etc/nginx/conf.d/zabbix.conf
 
 # sed -i "s/Server=127.0.0.1/Server=$6/g" /etc/zabbix/zabbix_agentd.conf

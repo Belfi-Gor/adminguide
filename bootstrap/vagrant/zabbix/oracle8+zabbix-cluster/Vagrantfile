@@ -7,15 +7,15 @@ virt_machines=[
   {
     :hostname => "zabbixserver1",
     :ip => "192.168.192.20"
-  }#,
-#   {
-#     :hostname => "zabbixagent1",
-#     :ip => "192.168.216.21"
-#   },
-#   {
-#     :hostname => "zabbixagent2",
-#     :ip => "192.168.216.22"
-#   }
+  },
+  {
+    :hostname => "zabbixserver2",
+    :ip => "192.168.216.21"
+  },
+  {
+    :hostname => "zabbixserver3",
+    :ip => "192.168.216.22"
+  }
 ]
 
 # Show VM GUI
