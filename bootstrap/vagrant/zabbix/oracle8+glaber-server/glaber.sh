@@ -57,9 +57,9 @@ then
     # sudo systemctl start postgresql-14
     # systemctl status postgresql-14
 
-    # echo "*******************************************************************************"
-    # echo "************************** INSTALLING GLABER-SERVER ***************************"
-    # echo "*******************************************************************************"
+    echo "*******************************************************************************"
+    echo "************************** INSTALLING GLABER-SERVER ***************************"
+    echo "*******************************************************************************"
 
     cat > /etc/yum.repos.d/glaber.repo << EOL
 [glaber]
@@ -68,18 +68,30 @@ baseurl=https://glaber.io/repo/rhel/8
 enabled=1
 gpgcheck=0
 EOL
-
+    dnf -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+    dnf -y install https://rpms.remirepo.net/enterprise/remi-release-8.rpm
+    dnf -y install glaber-server-pgsql glaber-nginx-conf glaber-web-pgsql php74-php-pgsql.x86_64 zabbix-sql-scripts zabbix-agent
     # echo "*******************************************************************************"
     # echo "************************** INSTALLING ZABBIX-SERVER ***************************"
     # echo "*******************************************************************************"
     # rpm -Uvh https://repo.zabbix.com/zabbix/5.4/rhel/8/x86_64/zabbix-release-5.4-1.el8.noarch.rpm
     # dnf install -y zabbix-server-pgsql-5.4.4-1.el8 zabbix-web-pgsql-5.4.4-1.el8 zabbix-nginx-conf-5.4.4-1.el8 zabbix-sql-scripts-5.4.4-1.el8
-    # su - postgres -c 'psql --command "CREATE USER zabbix WITH PASSWORD '\'123456789\'';"'
-    # su - postgres -c 'psql --command "CREATE DATABASE zabbix OWNER zabbix;"'
-    # zcat /usr/share/doc/zabbix-sql-scripts/postgresql/create.sql.gz | sudo -u zabbix psql zabbix
-    # sed -i "s/# DBPassword=/DBPassword=123456789/g" /etc/zabbix/zabbix_server.conf
-    # sed -i 's/#        listen          80;/        listen          80;/g' /etc/nginx/conf.d/zabbix.conf
-    # sed -i 's/#        server_name     example.com;/        server_name     zabbix.lan;/g' /etc/nginx/conf.d/zabbix.conf
+    su - postgres -c 'psql --command "CREATE USER zabbix WITH PASSWORD '\'123456789\'';"'
+    su - postgres -c 'psql --command "CREATE DATABASE zabbix OWNER zabbix;"'
+    zcat /usr/share/doc/glaber-server-pgsql/create.sql.gz | sudo -u zabbix psql zabbix
+    sed -i "s/# DBPassword=/DBPassword=123456789/g" /etc/zabbix/zabbix_server.conf
+    sed -i 's/#        listen          80;/        listen          80;/g' /etc/nginx/conf.d/zabbix.conf
+    sed -i 's/#        server_name     example.com;/        server_name     zabbix.lan;/g' /etc/nginx/conf.d/zabbix.conf
+    
+    sed -i 's/memory_limit = 128M/memory_limit = 512M/g' /etc/php.ini
+    sed -i 's/post_max_size = 8M/post_max_size = 64M/g' /etc/php.ini
+    sed -i 's/max_execution_time = 30/max_execution_time = 60/g' /etc/php.ini
+    sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 32M/g' /etc/php.ini
+    sed -i 's/max_input_time = 60/max_input_time = 60/g' /etc/php.ini
+    #sed -i 's/;date.timezone =/date.timezone = Europe/Moscow/g' /etc/php.ini
+    # sed -i 's///g' /etc/php.ini
+    # sed -i 's///g' /etc/php.ini
+    # sed -i 's///g' /etc/php.ini
     # systemctl restart zabbix-server nginx php-fpm
     # systemctl enable zabbix-server nginx php-fpm
 fi
