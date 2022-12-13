@@ -45,9 +45,9 @@ then
     systemctl start postgresql-13
     systemctl status postgresql-13
 
-    # rpm -e --nodeps libpq5-15.1-42PGDG.rhel8.x86_64
-    # rpm -i https://rpmfind.net/linux/centos/8-stream/AppStream/x86_64/os/Packages/libpq-13.3-1.el8_4.x86_64.rpm
-    # rm /usr/pgsql-14/lib/libpq.so.5
+    rpm -e --nodeps libpq5-15.1-42PGDG.rhel8.x86_64
+    rpm -i https://rpmfind.net/linux/centos/8-stream/AppStream/x86_64/os/Packages/libpq-13.3-1.el8_4.x86_64.rpm
+    rm /usr/pgsql-14/lib/libpq.so.5
 
     # sudo dnf install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm
     # sudo dnf -qy module disable postgresql
