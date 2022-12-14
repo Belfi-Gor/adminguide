@@ -100,39 +100,39 @@ EOL
     echo "*************************** INSTALLING CLICKHOUSE *****************************"
     echo "*******************************************************************************"
 
-#     yum install -y yum-utils
-#     yum-config-manager --add-repo https://packages.clickhouse.com/rpm/clickhouse.repo
-#     yum install -y clickhouse-server clickhouse-client
-#     /etc/init.d/clickhouse-server start
-# cat > /etc/clickhouse-server/config.d/query_log.xml << EOL
-# <yandex>
-#     <query_log replace="1">
-#     <database>system</database>
+    yum install -y yum-utils
+    yum-config-manager --add-repo https://packages.clickhouse.com/rpm/clickhouse.repo
+    yum install -y clickhouse-server clickhouse-client
+    /etc/init.d/clickhouse-server start
+cat > /etc/clickhouse-server/config.d/query_log.xml << EOL
+<yandex>
+    <query_log replace="1">
+    <database>system</database>
 
-#     <table>query_log</table>
-#         <flush_interval_milliseconds>7500</flush_interval_milliseconds>
-#         <engine>
-#           ENGINE = MergeTree
-#           PARTITION BY event_date
-#           ORDER BY (event_time)
-#           TTL event_date + interval 90 day
-#           SETTINGS ttl_only_drop_parts=1
-#         </engine>
-#     </query_log>
-# </yandex>
-# EOL
+    <table>query_log</table>
+        <flush_interval_milliseconds>7500</flush_interval_milliseconds>
+        <engine>
+          ENGINE = MergeTree
+          PARTITION BY event_date
+          ORDER BY (event_time)
+          TTL event_date + interval 90 day
+          SETTINGS ttl_only_drop_parts=1
+        </engine>
+    </query_log>
+</yandex>
+EOL
 
-# cat > /etc/clickhouse-server/config.d/disable_query_thread_log.xml << EOL
-# <yandex>
-#     <query_thread_log remove="1"/>
-# </yandex>
-# EOL
+cat > /etc/clickhouse-server/config.d/disable_query_thread_log.xml << EOL
+<yandex>
+    <query_thread_log remove="1"/>
+</yandex>
+EOL
 
-# cat > /etc/clickhouse-server/config.d/part_log.xml << EOL
-# <yandex>
-#     <part_log remove="1" />
-# </yandex>
-# EOL
+cat > /etc/clickhouse-server/config.d/part_log.xml << EOL
+<yandex>
+    <part_log remove="1" />
+</yandex>
+EOL
 
 # cat > /etc/clickhouse-server/users.d/log_queries.xml << EOL
 # <yandex>
@@ -144,116 +144,116 @@ EOL
 # </yandex>
 # EOL
 
-# cat > /etc/clickhouse-server/users.d/enable_on_disk_operations.xml << EOL
-# <yandex>
-#   <profiles>
-#     <default>
-#       <max_bytes_before_external_group_by>2000000000</max_bytes_before_external_group_by>
-#       <max_bytes_before_external_sort>2000000000</max_bytes_before_external_sort>
-#      </default>
-#   </profiles>
-# </yandex>
-# EOL
+cat > /etc/clickhouse-server/users.d/enable_on_disk_operations.xml << EOL
+<yandex>
+  <profiles>
+    <default>
+      <max_bytes_before_external_group_by>2000000000</max_bytes_before_external_group_by>
+      <max_bytes_before_external_sort>2000000000</max_bytes_before_external_sort>
+     </default>
+  </profiles>
+</yandex>
+EOL
 
-# cat > /root/history.sql << EOL
-# CREATE DATABASE glaber;
-# CREATE TABLE glaber.history_dbl (   day Date,  
-#                                 itemid UInt64,  
-#                                 clock DateTime,  
-#                                 hostname String,
-#                                 itemname String,
-#                                 ns UInt32, 
-#                                 value Float64
-#                             ) ENGINE = MergeTree()
-# PARTITION BY toYYYYMM(day)
-# ORDER BY (itemid, clock) 
-# TTL day + INTERVAL 6 MONTH;
+cat > /root/history.sql << EOL
+CREATE DATABASE glaber;
+CREATE TABLE glaber.history_dbl (   day Date,  
+                                itemid UInt64,  
+                                clock DateTime,  
+                                hostname String,
+                                itemname String,
+                                ns UInt32, 
+                                value Float64
+                            ) ENGINE = MergeTree()
+PARTITION BY toYYYYMM(day)
+ORDER BY (itemid, clock) 
+TTL day + INTERVAL 6 MONTH;
 
-# --                            
-# CREATE TABLE glaber.history_uint (   day Date,  
-#                                 itemid UInt64,  
-#                                 clock DateTime,  
-#                                 hostname String,
-#                                 itemname String,
-#                                 ns UInt32, 
-#                                 value UInt64  
-#                             ) ENGINE = MergeTree()
-# PARTITION BY toYYYYMM(day)
-# ORDER BY (itemid, clock) 
-# TTL day + INTERVAL 6 MONTH;
+--                            
+CREATE TABLE glaber.history_uint (   day Date,  
+                                itemid UInt64,  
+                                clock DateTime,  
+                                hostname String,
+                                itemname String,
+                                ns UInt32, 
+                                value UInt64  
+                            ) ENGINE = MergeTree()
+PARTITION BY toYYYYMM(day)
+ORDER BY (itemid, clock) 
+TTL day + INTERVAL 6 MONTH;
 
-# CREATE TABLE glaber.history_str (   day Date,  
-#                                 itemid UInt64,  
-#                                 clock DateTime,  
-#                                 hostname String,
-#                                 itemname String,
-#                                 ns UInt32, 
-#                                 value String  
-#                             ) ENGINE = MergeTree()
-# PARTITION BY toYYYYMM(day)
-# ORDER BY (itemid, clock) 
-# TTL day + INTERVAL 6 MONTH;
+CREATE TABLE glaber.history_str (   day Date,  
+                                itemid UInt64,  
+                                clock DateTime,  
+                                hostname String,
+                                itemname String,
+                                ns UInt32, 
+                                value String  
+                            ) ENGINE = MergeTree()
+PARTITION BY toYYYYMM(day)
+ORDER BY (itemid, clock) 
+TTL day + INTERVAL 6 MONTH;
 
-# --
-# CREATE TABLE glaber.history_log (   day Date,  
-#                                 itemid UInt64,  
-#                                 clock DateTime,  
-#                                 logeventid UInt64,
-#                                 source  String,
-#                                 severity Int16,
-#                                 hostname String,
-#                                 itemname String,
-#                                 ns UInt32, 
-#                                 value String
-#                             ) ENGINE = MergeTree()
-# PARTITION BY toYYYYMM(day)
-# ORDER BY (itemid, clock) 
-# TTL day + INTERVAL 6 MONTH;
+--
+CREATE TABLE glaber.history_log (   day Date,  
+                                itemid UInt64,  
+                                clock DateTime,  
+                                logeventid UInt64,
+                                source  String,
+                                severity Int16,
+                                hostname String,
+                                itemname String,
+                                ns UInt32, 
+                                value String
+                            ) ENGINE = MergeTree()
+PARTITION BY toYYYYMM(day)
+ORDER BY (itemid, clock) 
+TTL day + INTERVAL 6 MONTH;
 
-# --
-# CREATE TABLE glaber.trends_dbl
-# (
-#     day Date,
-#     itemid UInt64,
-#     clock DateTime,
-#     value_min Float64,
-#     value_max Float64,
-#     value_avg Float64,
-#     count UInt32,
-#     hostname String,
-#     itemname String
-# )
-# ENGINE = MergeTree
-# PARTITION BY toYYYYMM(day)
-# ORDER BY (itemid, clock)
-# TTL day + toIntervalMonth(24)
-# SETTINGS index_granularity = 8192;
+--
+CREATE TABLE glaber.trends_dbl
+(
+    day Date,
+    itemid UInt64,
+    clock DateTime,
+    value_min Float64,
+    value_max Float64,
+    value_avg Float64,
+    count UInt32,
+    hostname String,
+    itemname String
+)
+ENGINE = MergeTree
+PARTITION BY toYYYYMM(day)
+ORDER BY (itemid, clock)
+TTL day + toIntervalMonth(24)
+SETTINGS index_granularity = 8192;
 
-# --
-# CREATE TABLE glaber.trends_uint
-# (
-#     day Date,
-#     itemid UInt64,
-#     clock DateTime,
-#     value_min Int64,  
-#     value_max Int64,
-#     value_avg Int64,
-#     count UInt32,
-#     hostname String,
-#     itemname String
-# )
-# ENGINE = MergeTree
-# PARTITION BY toYYYYMM(day)
-# ORDER BY (itemid, clock)
-# TTL day + toIntervalMonth(24)
-# SETTINGS index_granularity = 8192;
+--
+CREATE TABLE glaber.trends_uint
+(
+    day Date,
+    itemid UInt64,
+    clock DateTime,
+    value_min Int64,  
+    value_max Int64,
+    value_avg Int64,
+    count UInt32,
+    hostname String,
+    itemname String
+)
+ENGINE = MergeTree
+PARTITION BY toYYYYMM(day)
+ORDER BY (itemid, clock)
+TTL day + toIntervalMonth(24)
+SETTINGS index_granularity = 8192;
 
-# -- some stats guide
-# -- https://gist.github.com/sanchezzzhak/511fd140e8809857f8f1d84ddb937015
-# -- to submit all CREATE TABLE queries at once, run "clickhouse-client" with the "--multiquery" param
-# EOL
+-- some stats guide
+-- https://gist.github.com/sanchezzzhak/511fd140e8809857f8f1d84ddb937015
+-- to submit all CREATE TABLE queries at once, run "clickhouse-client" with the "--multiquery" param
+EOL
 
-#     clickhouse-client --multiquery < /root/history.sql
+    clickhouse-client --multiquery < /root/history.sql
 
     sed -i 's/# CacheSize=8M/CacheSize=256M/g' /etc/zabbix/zabbix_server.conf
     sed -i 's/# StartDBSyncers=4/StartDBSyncers=1/g' /etc/zabbix/zabbix_server.conf
@@ -295,19 +295,27 @@ EOL
     echo 'global $HISTORY;' >> /etc/zabbix/web/maintenance.inc.php
     echo '$HISTORY['storagetype']='server';' >> /etc/zabbix/web/maintenance.inc.php
 
-    systemctl restart clickhouse-server
+    /etc/init.d/clickhouse-server stop
+    /etc/init.d/clickhouse-server start
     systemctl status clickhouse-server
-    systemctl restart postgresql
-    systemctl status postgresql
+    systemctl restart postgresql-13
+    systemctl status postgresql-13
     systemctl restart nginx
     systemctl status nginx
-    systemctl restart php7.4-fpm
-    systemctl status php7.4-fpm
+    systemctl restart php-fpm
+    systemctl status php-fpm
     systemctl restart zabbix-server
     systemctl status zabbix-server
     systemctl restart zabbix-agent
     systemctl status zabbix-agent
 
+
+    systemctl status clickhouse-server
+    systemctl status postgresql-13
+    systemctl status nginx
+    systemctl status php-fpm
+    systemctl status zabbix-server
+    systemctl status zabbix-agent
 fi
 #sed -i 's/; php_value[date.timezone] = Europe/Riga/listen 80;/g' /etc/nginx/conf.d/zabbix.conf
 
