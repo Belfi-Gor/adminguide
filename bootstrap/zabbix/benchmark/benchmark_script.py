@@ -11,7 +11,7 @@ elif (sys.argv[1] == '-simple_print'): # Если simple_print
         result = ["test_value_1", "test_value_2", "test_value_3"]
         print(result[random.randrange(len(result))])
     if (sys.argv[2] == 'random_int_value'):
-        print(result[random.randrange(1000)])
+        print(random.randrange(1000))
     else:
         print(sys.argv[2]) # Выводим в консоль содержимое sys.arvg[2]
 else: # Во всех остальных случаях
