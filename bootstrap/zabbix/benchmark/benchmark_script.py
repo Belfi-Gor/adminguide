@@ -11,6 +11,14 @@ elif (sys.argv[1] == '-simple_print'): # Если simple_print
         result = ["test_value_1", "test_value_2", "test_value_3"]
         print(result[random.randrange(len(result))])
     if (sys.argv[2] == 'random_int_value'):
+        # Needed to generate random int valuse for benchmark zabbix
+        # Example of usage:
+        # python3 ./benchmark_script.py -simple_print random_int_value
+        # 138
+        # python3 ./benchmark_script.py -simple_print random_int_value
+        # 782
+        # python3 ./benchmark_script.py -simple_print random_int_value
+        # 405
         print(random.randrange(1000))
     else:
         print(sys.argv[2]) # Выводим в консоль содержимое sys.arvg[2]
