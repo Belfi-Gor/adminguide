@@ -30,9 +30,9 @@ if (sys.argv[1] == '-generate_items'):
     result = []
     for i in range(int(sys.argv[2])):
         #if (sys.argv[3] == 'random_text_value'):
-        row = {"{#"+f"{sys.argv[3]}"+"_ITEMNAME}": f"{sys.argv[3]}{i+1}"}
-        row["{#"+f"{sys.argv[3]}"+"_ITEMVALUE}"] = sys.argv[3]
-        row["{#"+f"{sys.argv[3]}"+"_ITEMNUMBER}"] = i+1
+        row = {"{#"+f"{sys.argv[3]}"+"ITEMNAME}": f"{sys.argv[3]}{i+1}"}
+        row["{#"+f"{sys.argv[3]}"+"ITEMVALUE}"] = sys.argv[3]
+        row["{#"+f"{sys.argv[3]}"+"ITEMNUMBER}"] = i+1
         result.append(row)
     
     print(json.dumps(result))
