@@ -1,0 +1,38 @@
+zabbix_export:
+  version: '5.4'
+  date: '2022-12-18T16:41:56Z'
+  groups:
+    -
+      uuid: 2da8a27a2c6a4375bf683ec345ae308f
+      name: benchmark
+  templates:
+    -
+      uuid: 9d567d1483c04e9686b0fd922705cb8d
+      template: benchmark
+      name: benchmark
+      groups:
+        -
+          name: benchmark
+      discovery_rules:
+        -
+          uuid: 45ced4939f8a4d528cfc183614628105
+          name: 'Random int values'
+          key: 'test[-generate_items, 2, RIV]'
+          description: 'Random int values generation prototype'
+          item_prototypes:
+            -
+              uuid: 3f828fe23bc341e193d06a61078a161d
+              name: 'simple_print {#RIVITEMNAME}'
+              key: 'simple_print[{#RIVITEMVALUE}, {#RIVITEMNUMBER}]'
+        -
+          uuid: a5c962350d604261827c9a4cadc1032d
+          name: 'Random text values'
+          key: 'test[-generate_items, 2, RTV]'
+          description: 'Random text values generation prototype'
+          item_prototypes:
+            -
+              uuid: 44acb1fbeb774519a211299a694b95c4
+              name: 'simple_print {#RTVITEMNAME}'
+              key: 'simple_print[{#RTVITEMVALUE}, {#RTVITEMNUMBER}]'
+              trends: '0'
+              value_type: TEXT
