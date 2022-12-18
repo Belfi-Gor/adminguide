@@ -43,7 +43,8 @@ then
     /usr/pgsql-13/bin/postgresql-13-setup initdb
     systemctl enable postgresql-13
     systemctl start postgresql-13
-    systemctl status postgresql-13
+    systemctl status postgresql-13qw
+
 
     rpm -e --nodeps libpq5-15.1-42PGDG.rhel8.x86_64
     rpm -i https://rpmfind.net/linux/centos/8-stream/AppStream/x86_64/os/Packages/libpq-13.3-1.el8_4.x86_64.rpm
@@ -81,7 +82,7 @@ EOL
     zcat /usr/share/doc/glaber-server-pgsql/create.sql.gz | sudo -u zabbix psql zabbix
     sed -i "s/# DBPassword=/DBPassword=123456789/g" /etc/zabbix/zabbix_server.conf
     sed -i 's/#        listen          80;/        listen          80;/g' /etc/nginx/conf.d/zabbix.conf
-    sed -i 's/#        server_name     example.com;/        server_name     zabbix.lan;/g' /etc/nginx/conf.d/zabbix.conf
+    sed -i 's/#        server_name     example.com;/        server_name     glaber5.lan;/g' /etc/nginx/conf.d/zabbix.conf
     
     sed -i 's/memory_limit = 128M/memory_limit = 512M/g' /etc/php.ini
     sed -i 's/post_max_size = 8M/post_max_size = 64M/g' /etc/php.ini
@@ -297,6 +298,8 @@ EOL
 
     /etc/init.d/clickhouse-server stop
     /etc/init.d/clickhouse-server start
+    /etc/init.d/clickhouse-server stop
+    systemctl start clickhouse-server
     systemctl status clickhouse-server
     systemctl restart postgresql-13
     systemctl status postgresql-13
