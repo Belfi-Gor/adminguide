@@ -5,8 +5,8 @@
 # Массив виртмашин
 virt_machines=[
   {
-    :hostname => "zabbixserver1",
-    :ip => "192.168.192.20"
+    :hostname => "zabbix6server1",
+    :ip => "192.168.191.20"
   }#,
 #   {
 #     :hostname => "zabbixagent1",
@@ -60,7 +60,7 @@ HOST_USER_PASS = '123456789'
 # Выполнить apt dist-upgrade
 HOST_UPGRADE = 'false' 
 
-ZABBIX_SERVER_IP = '192.168.192.20'
+ZABBIX_SERVER_IP = '192.168.191.20'
 
 Vagrant.configure("2") do |config|
 	virt_machines.each do |machine|

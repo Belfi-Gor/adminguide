@@ -22,8 +22,8 @@ echo "$5	$4.localdomain	$4" >> /etc/hosts
 echo "*******************************************************************************"
 echo "************************** INSTALLING ZABBIX-AGENT ***************************"
 echo "*******************************************************************************"
-rpm -Uvh https://repo.zabbix.com/zabbix/5.4/rhel/8/x86_64/zabbix-release-5.4-1.el8.noarch.rpm
-dnf install -y zabbix-agent-5.4.4-1.el8
+rpm -Uvh https://repo.zabbix.com/zabbix/6.2/rhel/8/x86_64/zabbix-release-6.2-3.el8.noarch.rpm
+dnf install -y zabbix-agent
 sed -i "s/Server=127.0.0.1/Server=127.0.0.1,$6/g" /etc/zabbix/zabbix_agentd.conf
 systemctl restart zabbix-agent zabbix-get
 echo "zabbix-get usage reminder:"
@@ -35,18 +35,22 @@ then
     echo "*******************************************************************************"
     echo "************************** INSTALLING POSTGRESQL ***************************"
     echo "*******************************************************************************"
+    dnf install postgresql
+    systemctl enable postgresql
+    systemctl start postgresql
+    systemctl status postgresql
     #dnf install -y libpq5
-    dnf install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm
-    dnf -qy module disable postgresql
-    dnf install -y postgresql13-server
-    /usr/pgsql-13/bin/postgresql-13-setup initdb
-    systemctl enable postgresql-13
-    systemctl start postgresql-13
-    systemctl status postgresql-13
+    # dnf install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+    # dnf -qy module disable postgresql
+    # dnf install -y postgresql13-server
+    # /usr/pgsql-13/bin/postgresql-13-setup initdb
+    # systemctl enable postgresql-13
+    # systemctl start postgresql-13
+    # systemctl status postgresql-13
 
-    rpm -e --nodeps libpq5-15.1-42PGDG.rhel8.x86_64
-    rpm -i https://rpmfind.net/linux/centos/8-stream/AppStream/x86_64/os/Packages/libpq-13.3-1.el8_4.x86_64.rpm
-    rm /usr/pgsql-14/lib/libpq.so.5
+    # rpm -e --nodeps libpq5-15.1-42PGDG.rhel8.x86_64
+    # rpm -i https://rpmfind.net/linux/centos/8-stream/AppStream/x86_64/os/Packages/libpq-13.3-1.el8_4.x86_64.rpm
+    # rm /usr/pgsql-14/lib/libpq.so.5
 
     # sudo dnf install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm
     # sudo dnf -qy module disable postgresql
@@ -60,14 +64,15 @@ then
     echo "*******************************************************************************"
     echo "************************** INSTALLING ZABBIX-SERVER ***************************"
     echo "*******************************************************************************"
-    rpm -Uvh https://repo.zabbix.com/zabbix/5.4/rhel/8/x86_64/zabbix-release-5.4-1.el8.noarch.rpm
-    dnf install -y zabbix-server-pgsql-5.4.4-1.el8 zabbix-web-pgsql-5.4.4-1.el8 zabbix-nginx-conf-5.4.4-1.el8 zabbix-sql-scripts-5.4.4-1.el8
+    rpm -Uvh https://repo.zabbix.com/zabbix/6.2/rhel/8/x86_64/zabbix-release-6.2-3.el8.noarch.rpm
+    dnf clean all 
+    dnf install zabbix-server-pgsql zabbix-web-pgsql zabbix-nginx-conf zabbix-sql-scripts zabbix-selinux-policy
     su - postgres -c 'psql --command "CREATE USER zabbix WITH PASSWORD '\'123456789\'';"'
     su - postgres -c 'psql --command "CREATE DATABASE zabbix OWNER zabbix;"'
-    zcat /usr/share/doc/zabbix-sql-scripts/postgresql/create.sql.gz | sudo -u zabbix psql zabbix
+    zcat /usr/share/zabbix-sql-scripts/postgresql/server.sql.gz | sudo -u zabbix psql zabbix 
     sed -i "s/# DBPassword=/DBPassword=123456789/g" /etc/zabbix/zabbix_server.conf
     sed -i 's/#        listen          80;/        listen          80;/g' /etc/nginx/conf.d/zabbix.conf
-    sed -i 's/#        server_name     example.com;/        server_name     zabbix.lan;/g' /etc/nginx/conf.d/zabbix.conf
+    sed -i 's/#        server_name     example.com;/        server_name     zabbix6.lan;/g' /etc/nginx/conf.d/zabbix.conf
     systemctl restart zabbix-server nginx php-fpm
     systemctl enable zabbix-server nginx php-fpm
 fi
