@@ -30,27 +30,27 @@ echo "zabbix-get usage reminder:"
 echo 'zabbix_get -s 127.0.0.1 -p 10050 -k "system.cpu.load[all,avg1]"'
 systemctl enable zabbix-agent
 
-if [[ $HOSTNAME = "zabbixserver1" ]]
+if [[ $HOSTNAME = "zabbix6server1" ]]
 then
     echo "*******************************************************************************"
     echo "************************** INSTALLING POSTGRESQL ***************************"
     echo "*******************************************************************************"
-    dnf install postgresql
-    systemctl enable postgresql
-    systemctl start postgresql
-    systemctl status postgresql
-    #dnf install -y libpq5
-    # dnf install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm
-    # dnf -qy module disable postgresql
-    # dnf install -y postgresql13-server
-    # /usr/pgsql-13/bin/postgresql-13-setup initdb
-    # systemctl enable postgresql-13
-    # systemctl start postgresql-13
-    # systemctl status postgresql-13
+    # dnf install postgresql
+    # systemctl enable postgresql
+    # systemctl start postgresql
+    # systemctl status postgresql
+    dnf install -y libpq5
+    dnf install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+    dnf -qy module disable postgresql
+    dnf install -y postgresql13-server
+    /usr/pgsql-13/bin/postgresql-13-setup initdb
+    systemctl enable postgresql-13
+    systemctl start postgresql-13
+    systemctl status postgresql-13
 
-    # rpm -e --nodeps libpq5-15.1-42PGDG.rhel8.x86_64
-    # rpm -i https://rpmfind.net/linux/centos/8-stream/AppStream/x86_64/os/Packages/libpq-13.3-1.el8_4.x86_64.rpm
-    # rm /usr/pgsql-14/lib/libpq.so.5
+    rpm -e --nodeps libpq5-15.1-42PGDG.rhel8.x86_64
+    rpm -i https://rpmfind.net/linux/centos/8-stream/AppStream/x86_64/os/Packages/libpq-13.3-1.el8_4.x86_64.rpm
+    rm /usr/pgsql-14/lib/libpq.so.5
 
     # sudo dnf install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm
     # sudo dnf -qy module disable postgresql
@@ -66,7 +66,8 @@ then
     echo "*******************************************************************************"
     rpm -Uvh https://repo.zabbix.com/zabbix/6.2/rhel/8/x86_64/zabbix-release-6.2-3.el8.noarch.rpm
     dnf clean all 
-    dnf install zabbix-server-pgsql zabbix-web-pgsql zabbix-nginx-conf zabbix-sql-scripts zabbix-selinux-policy
+    dnf module switch-to php:7.4 -y
+    dnf install -y zabbix-server-pgsql zabbix-web-pgsql zabbix-nginx-conf zabbix-sql-scripts zabbix-selinux-policy
     su - postgres -c 'psql --command "CREATE USER zabbix WITH PASSWORD '\'123456789\'';"'
     su - postgres -c 'psql --command "CREATE DATABASE zabbix OWNER zabbix;"'
     zcat /usr/share/zabbix-sql-scripts/postgresql/server.sql.gz | sudo -u zabbix psql zabbix 
