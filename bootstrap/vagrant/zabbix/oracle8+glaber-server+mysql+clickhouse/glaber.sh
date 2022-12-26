@@ -34,8 +34,12 @@ systemctl enable zabbix-agent
 if [[ $HOSTNAME = "glaberserver1" ]]
 then
     echo "*******************************************************************************"
-    echo "************************** INSTALLING POSTGRESQL ***************************"
+    echo "************************** INSTALLING MySQL ***************************"
     echo "*******************************************************************************"
+    dnf install -y @mysql
+    systemctl start mysqld
+    systemctl enable mysqld
+    systemctl status mysqld
     #dnf install -y libpq5
     # dnf install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm
     # dnf -qy module disable postgresql
@@ -72,6 +76,13 @@ EOL
     dnf -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
     dnf -y install https://rpms.remirepo.net/enterprise/remi-release-8.rpm
     dnf -y install glaber-server-mysql glaber-nginx-conf glaber-web-mysql php74-php-mysql.x86_64 zabbix-sql-scripts zabbix-agent
+    mysql -uroot --execute "create database zabbix character set utf8 collate utf8_bin;"
+    mysql -uroot --execute "create user zabbix@localhost identified by 'password';"
+    mysql -uroot --execute "grant all privileges on zabbix.* to zabbix@localhost;"
+    mysql -uroot --execute "set global log_bin_trust_function_creators = 1;"
+
+    
+    mysql -uroot --execute "set global log_bin_trust_function_creators = 0;"
     # su - postgres -c 'psql --command "CREATE USER zabbix WITH PASSWORD '\'123456789\'';"'
     # su - postgres -c 'psql --command "CREATE DATABASE zabbix OWNER zabbix;"'
     # zcat /usr/share/doc/glaber-server-pgsql/create.sql.gz | sudo -u zabbix psql zabbix
