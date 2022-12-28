@@ -1,7 +1,5 @@
 ---
 # tasks file for zabbix-agent
-  - name: "Test playbook run"
-    tasks:
-      - name: "Debug"
-        ansible.builtin.debug:
-          msg: "Test debug"
+  - name: "Debug"
+    ansible.builtin.debug:
+      msg: "Test debug"
