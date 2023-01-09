@@ -33,10 +33,34 @@
     name: zabbix-agent
     enabled: yes
 
-- name: Copy file with owner and permissions
+- name: Copy benchmark_script.py to /etc/zabbbix/
   ansible.builtin.copy:
     src: ../../../zabbix/benchmark/benchmark_script.py
     dest: /etc/zabbix/benchmark_script.py
+    owner: zabbix
+    group: zabbix
+    mode: '0644'
+
+- name: Copy items_generation_script.py to /etc/zabbbix/
+  ansible.builtin.copy:
+    src: ../../../zabbix/benchmark/items_generation_script.py
+    dest: /etc/zabbix/items_generation_script.py
+    owner: zabbix
+    group: zabbix
+    mode: '0644'
+
+- name: Copy gen_items.conf to /etc/zabbbix/zabbix_agentd.d/
+  ansible.builtin.copy:
+    src: ../../../zabbix/benchmark/zabbix_agentd.d/gen_items.conf
+    dest: /etc/zabbix/zabbix_agentd.d/gen_items.conf
+    owner: zabbix
+    group: zabbix
+    mode: '0644'
+
+- name: Copy simple_print.conf to /etc/zabbbix/zabbix_agentd.d/
+  ansible.builtin.copy:
+    src: ../../../zabbix/benchmark/zabbix_agentd.d/simple_print.conf
+    dest: /etc/zabbix/zabbix_agentd.d/simple_print.conf
     owner: zabbix
     group: zabbix
     mode: '0644'
