@@ -32,3 +32,11 @@
   ansible.builtin.systemd:
     name: zabbix-agent
     enabled: yes
+
+- name: Copy file with owner and permissions
+  ansible.builtin.copy:
+    src: ../../../zabbix/benchmark/benchmark_script.py
+    dest: /etc/zabbix/benchmark_script.py
+    owner: zabbix
+    group: zabbix
+    mode: '0644'
