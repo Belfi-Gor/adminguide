@@ -1,6 +1,6 @@
 ---
 - name: Using zabbix-agent-role 
-  hosts: test-machines
+  hosts: zabbix-servers
   become: yes
   roles:
     - role: zabbix-server

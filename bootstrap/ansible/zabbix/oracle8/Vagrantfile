@@ -6,7 +6,7 @@
 virt_machines=[
   {
     :hostname => "zabbixserver1",
-    :ip => "192.168.192.20"
+    :ip => "192.168.129.20"
   }#,
 #   {
 #     :hostname => "zabbixagent1",
