@@ -23,6 +23,13 @@
     regexp: 'ServerActive=127.0.0.1'
     line: ServerActive=127.0.0.1,10.241.114.20,10.242.114.20,10.243.114.20
 
+- name: Configure active servers white list
+  ansible.builtin.lineinfile:
+    path: /etc/zabbix/zabbix_agentd.conf
+    regexp: 'StartAgents='
+    line: StartAgents=5
+
+
 - name: Enable zabbix-agent
   ansible.builtin.systemd:
     name: zabbix-agent
