@@ -32,6 +32,12 @@
 - name: Configure StartAgents
   ansible.builtin.lineinfile:
     path: /etc/zabbix/zabbix_agentd.conf
+    regexp: 'MaxLinesPerSecond='
+    line: MaxLinesPerSecond=50
+
+- name: Configure StartAgents
+  ansible.builtin.lineinfile:
+    path: /etc/zabbix/zabbix_agentd.conf
     regexp: 'LogFileSize='
     line: LogFileSize=64
 
