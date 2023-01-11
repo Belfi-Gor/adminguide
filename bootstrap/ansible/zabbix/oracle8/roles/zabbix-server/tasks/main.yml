@@ -14,13 +14,20 @@
     name: ['zabbix-server-pgsql', 'zabbix-web-pgsql', 'zabbix-nginx-conf', 'zabbix-sql-scripts', 'zabbix-selinux-policy']
     state: present
 
-- name: Create rails user, set MD5-hashed password, grant privs
-  community.postgresql.postgresql_user:
-    name: zabbix
-    password: 123456789
-    
-# - name: creating pgsql Zabbix DB
-#   ansible.builtin.shell: su - postgres -c 'psql --command "CREATE DATABASE zabbix OWNER zabbix;"'
+- name: Configure servers white list
+  ansible.builtin.lineinfile:
+    path: /etc/zabbix/zabbix_agentd.conf
+    regexp: '# DBPassword='
+    line: 'DBPassword=123456789'
 
-# - name: Importing SQL scripts
-#   ansible.builtin.shell: zcat /usr/share/zabbix-sql-scripts/postgresql/server.sql.gz | sudo -u zabbix psql zabbix 
+- name: Configure servers white list
+  ansible.builtin.lineinfile:
+    path: /etc/zabbix/zabbix_agentd.conf
+    regexp: '#        listen          80;'
+    line: '        listen          80;'
+
+- name: Configure servers white list
+  ansible.builtin.lineinfile:
+    path: /etc/zabbix/zabbix_agentd.conf
+    regexp: '#        server_name     example.com;'
+    line: '        server_name     zabbix6.lan;'

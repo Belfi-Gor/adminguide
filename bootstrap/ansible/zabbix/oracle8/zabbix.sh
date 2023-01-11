@@ -43,6 +43,8 @@ then
     dnf install -y oracle-epel-release-el8
     dnf install -y ansible
 
+    ansible-galaxy collection install community.postgresql
+    
     echo "[zabbix-servers]" >> /etc/ansible/hosts
     echo "zabbixserver1" >> /etc/ansible/hosts
 
