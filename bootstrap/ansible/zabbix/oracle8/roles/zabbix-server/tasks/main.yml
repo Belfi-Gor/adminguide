@@ -16,18 +16,18 @@
 
 - name: Configure servers white list
   ansible.builtin.lineinfile:
-    path: /etc/zabbix/zabbix_agentd.conf
+    path: /etc/zabbix/zabbix_server.conf
     regexp: '# DBPassword='
     line: 'DBPassword=123456789'
 
 - name: Configure servers white list
   ansible.builtin.lineinfile:
-    path: /etc/zabbix/zabbix_agentd.conf
+    path: /etc/zabbix/zabbix_server.conf
     regexp: '#        listen          80;'
     line: '        listen          80;'
 
 - name: Configure servers white list
   ansible.builtin.lineinfile:
-    path: /etc/zabbix/zabbix_agentd.conf
+    path: /etc/zabbix/zabbix_server.conf
     regexp: '#        server_name     example.com;'
     line: '        server_name     zabbix6.lan;'
