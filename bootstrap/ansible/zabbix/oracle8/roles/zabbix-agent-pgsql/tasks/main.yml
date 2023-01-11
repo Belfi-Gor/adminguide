@@ -3,5 +3,5 @@
 - name: Example clone of a single branch
   ansible.builtin.git:
     repo: https://git.zabbix.com/scm/zbx/zabbix.git
-    dest: /tmp/
+    dest: /tmp/git/
     version: release/6.2
