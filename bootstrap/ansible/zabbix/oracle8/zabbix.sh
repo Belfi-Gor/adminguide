@@ -20,6 +20,7 @@ echo "127.0.0.1	localhost.localdomain	localhost" >> /etc/hosts
 echo "$5	$4.localdomain	$4" >> /etc/hosts
 
 dnf install -y git
+dnf install sshpass -y
 
 # 
 
@@ -42,6 +43,15 @@ then
     dnf install -y oracle-epel-release-el8
     dnf install -y ansible
 
+    echo "[zabbix-servers]" >> /etc/ansible/hosts
+    echo "zabbixserver1" >> /etc/ansible/hosts
+
+    (echo ""; echo ""; echo "") | ssh-keygen
+    sudo ssh-keyscan -H zabbixserver1 >> ~/.ssh/known_hosts
+    sudo sshpass -p 123456789 ssh-copy-id root@zabbixserver1
+
+    rm -Rf ./adminguide/ && git clone https://github.com/Belfi-Gor/adminguide.git && ansible-playbook ./adminguide/bootstrap/ansible/zabbix/oracle8/zabbix-agent.yml
+    
     # rm -Rf ./adminguide/ && git clone https://github.com/Belfi-Gor/adminguide.git && ansible-playbook ./adminguide/bootstrap/ansible/zabbix/oracle8/zabbix-agent.yml
     # #dnf install -y libpq5
     # dnf install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm
