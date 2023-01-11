@@ -1,0 +1,7 @@
+---
+- name: Using zabbix-agent-role 
+  hosts: zabbix-servers
+  become: yes
+  roles:
+    - role: zabbix-agent
+    - role: zabbix-agent-pgsql
