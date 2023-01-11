@@ -50,7 +50,7 @@ then
     sudo ssh-keyscan -H zabbixserver1 >> ~/.ssh/known_hosts
     sudo sshpass -p 123456789 ssh-copy-id root@zabbixserver1
 
-    rm -Rf ./adminguide/ && git clone https://github.com/Belfi-Gor/adminguide.git && ansible-playbook ./adminguide/bootstrap/ansible/zabbix/oracle8/zabbix-agent.yml
+    rm -Rf ./adminguide/ && git clone https://github.com/Belfi-Gor/adminguide.git && ansible-playbook ./adminguide/bootstrap/ansible/zabbix/oracle8/zabbix-server.yml
     
     # rm -Rf ./adminguide/ && git clone https://github.com/Belfi-Gor/adminguide.git && ansible-playbook ./adminguide/bootstrap/ansible/zabbix/oracle8/zabbix-agent.yml
     # #dnf install -y libpq5
