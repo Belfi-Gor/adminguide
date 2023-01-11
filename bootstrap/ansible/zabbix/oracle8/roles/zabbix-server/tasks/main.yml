@@ -10,12 +10,12 @@
   ansible.builtin.shell: dnf module switch-to php:7.4 -y
 
 - name: Install the latest version of Apache
-  ansible.builtin.dnf:
+  dnf:
     name: '{{ item }}'
     state: present
   with_items:
-    zabbix-server-pgsql
-    zabbix-web-pgsql
-    zabbix-nginx-conf
-    zabbix-sql-scripts
-    zabbix-selinux-policy
+    - zabbix-server-pgsql
+    - zabbix-web-pgsql
+    - zabbix-nginx-conf
+    - zabbix-sql-scripts
+    - zabbix-selinux-policy
