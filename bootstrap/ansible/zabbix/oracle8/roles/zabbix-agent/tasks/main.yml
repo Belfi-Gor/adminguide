@@ -27,7 +27,7 @@
   ansible.builtin.lineinfile:
     path: /etc/zabbix/zabbix_agentd.conf
     regexp: 'StartAgents='
-    line: StartAgents=10
+    line: StartAgents=50
 
 - name: Configure StartAgents
   ansible.builtin.lineinfile:
