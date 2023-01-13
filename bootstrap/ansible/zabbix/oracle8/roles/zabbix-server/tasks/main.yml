@@ -17,7 +17,7 @@
 - name: Stop zabbix-server
   ansible.builtin.systemd:
     name: zabbix-server
-    state: stoped
+    state: stopped
 
 - name: Stop zabbix-mask
   ansible.builtin.systemd:
