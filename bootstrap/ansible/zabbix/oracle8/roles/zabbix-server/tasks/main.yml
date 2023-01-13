@@ -14,6 +14,16 @@
     name: ['zabbix-server-pgsql', 'zabbix-web-pgsql', 'zabbix-nginx-conf', 'zabbix-sql-scripts', 'zabbix-selinux-policy']
     state: present
 
+- name: Stop zabbix-server
+  ansible.builtin.systemd:
+    name: zabbix-server
+    state: stop
+
+- name: Stop zabbix-mask
+  ansible.builtin.systemd:
+    name: zabbix-server
+    state: masked
+
 - name: Configure Postgresql DBHost
   ansible.builtin.lineinfile:
     path: /etc/zabbix/zabbix_server.conf
@@ -37,7 +47,4 @@
     path: /etc/zabbix/zabbix_server.conf
     regexp: '#        server_name     example.com;'
     line: '        server_name     zabbix6.lan;'
-
-
-
     

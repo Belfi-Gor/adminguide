@@ -29,6 +29,12 @@
     regexp: 'StartAgents='
     line: StartAgents=50
 
+# - name: Configure StartAgents
+#   ansible.builtin.lineinfile:
+#     path: /etc/zabbix/zabbix_agentd.conf
+#     regexp: 'Hostname='
+#     line: Hostname={{ inventory_hostname }}
+    
 - name: Configure StartAgents
   ansible.builtin.lineinfile:
     path: /etc/zabbix/zabbix_agentd.conf
