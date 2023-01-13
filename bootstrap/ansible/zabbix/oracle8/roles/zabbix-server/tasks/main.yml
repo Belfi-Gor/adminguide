@@ -19,6 +19,12 @@
     name: zabbix-server
     state: stopped
 
+- name: Configure LogFileSize
+  ansible.builtin.lineinfile:
+    path: /etc/zabbix/zabbix_server.conf
+    regexp: 'LogFileSize=0'
+    line: 'LogFileSize=64'
+
 - name: Configure Postgresql DBHost
   ansible.builtin.lineinfile:
     path: /etc/zabbix/zabbix_server.conf
@@ -30,12 +36,6 @@
     path: /etc/zabbix/zabbix_server.conf
     regexp: '# DBPassword='
     line: 'DBPassword=123456789'
-
-- name: Configure LogFileSize
-  ansible.builtin.lineinfile:
-    path: /etc/zabbix/zabbix_server.conf
-    regexp: 'LogFileSize=0'
-    line: 'LogFileSize=64'
 
 - name: Configure StartPollers
   ansible.builtin.lineinfile:
@@ -83,7 +83,7 @@
   ansible.builtin.lineinfile:
     path: /etc/zabbix/zabbix_server.conf
     regexp: ' CacheSize='
-    line: ' CacheSize=32'
+    line: ' CacheSize=2G'
 
 - name: Configure StartDBSyncers
   ansible.builtin.lineinfile:
@@ -121,11 +121,11 @@
     regexp: ' ValueCacheSize='
     line: ' ValueCacheSize=256M'
 
-- name: Configure TrendCacheSize
-  ansible.builtin.lineinfile:
-    path: /etc/zabbix/zabbix_server.conf
-    regexp: 'Timeout='
-    line: 'Timeout=30'
+# - name: Configure TrendCacheSize
+#   ansible.builtin.lineinfile:
+#     path: /etc/zabbix/zabbix_server.conf
+#     regexp: 'Timeout='
+#     line: 'Timeout=30'
 
 - name: Configure TrendCacheSize
   ansible.builtin.lineinfile:
@@ -138,12 +138,6 @@
 #     path: /etc/zabbix/zabbix_server.conf
 #     regexp: ''
 #     line: ''
-
-- name: Configure TrendFunctionCacheSize
-  ansible.builtin.lineinfile:
-    path: /etc/zabbix/zabbix_server.conf
-    regexp: ' TrendFunctionCacheSize='
-    line: ' TrendFunctionCacheSize=64M'
 
 - name: Configure nginx listen port
   ansible.builtin.lineinfile:
