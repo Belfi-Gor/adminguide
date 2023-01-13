@@ -133,29 +133,11 @@
     regexp: ' StartLLDProcessors=2'
     line: ' StartLLDProcessors=10'
 
-- name: Configure TrendCacheSize
-  ansible.builtin.lineinfile:
-    path: /etc/zabbix/zabbix_server.conf
-    regexp: ''
-    line: ''
-
-- name: Configure TrendCacheSize
-  ansible.builtin.lineinfile:
-    path: /etc/zabbix/zabbix_server.conf
-    regexp: ''
-    line: ''
-
-- name: Configure TrendCacheSize
-  ansible.builtin.lineinfile:
-    path: /etc/zabbix/zabbix_server.conf
-    regexp: ''
-    line: ''
-
-- name: Configure TrendCacheSize
-  ansible.builtin.lineinfile:
-    path: /etc/zabbix/zabbix_server.conf
-    regexp: ''
-    line: ''
+# - name: Configure TrendCacheSize
+#   ansible.builtin.lineinfile:
+#     path: /etc/zabbix/zabbix_server.conf
+#     regexp: ''
+#     line: ''
 
 - name: Configure TrendFunctionCacheSize
   ansible.builtin.lineinfile:
