@@ -73,47 +73,95 @@
     regexp: 'StartDiscoverers='
     line: 'StartDiscoverers=5'
 
-- name: Configure Postgresql DBPassword
+- name: Configure StartTimers
+  ansible.builtin.lineinfile:
+    path: /etc/zabbix/zabbix_server.conf
+    regexp: 'StartTimers='
+    line: 'StartTimers=10'
+
+- name: Configure CacheSize
+  ansible.builtin.lineinfile:
+    path: /etc/zabbix/zabbix_server.conf
+    regexp: ' CacheSize='
+    line: ' CacheSize=32'
+
+- name: Configure StartDBSyncers
+  ansible.builtin.lineinfile:
+    path: /etc/zabbix/zabbix_server.conf
+    regexp: ' StartDBSyncers='
+    line: ' StartDBSyncers=20'
+
+- name: Configure HistoryCacheSize
+  ansible.builtin.lineinfile:
+    path: /etc/zabbix/zabbix_server.conf
+    regexp: ' HistoryCacheSize='
+    line: ' HistoryCacheSize=64M'
+
+- name: Configure HistoryIndexCacheSize
+  ansible.builtin.lineinfile:
+    path: /etc/zabbix/zabbix_server.conf
+    regexp: ' HistoryIndexCacheSize='
+    line: ' HistoryIndexCacheSize=64M'
+
+- name: Configure TrendCacheSize
+  ansible.builtin.lineinfile:
+    path: /etc/zabbix/zabbix_server.conf
+    regexp: ' TrendCacheSize='
+    line: ' TrendCacheSize=64M'
+
+- name: Configure TrendFunctionCacheSize
+  ansible.builtin.lineinfile:
+    path: /etc/zabbix/zabbix_server.conf
+    regexp: ' TrendFunctionCacheSize='
+    line: ' TrendFunctionCacheSize=128M'
+
+- name: Configure ValueCacheSize
+  ansible.builtin.lineinfile:
+    path: /etc/zabbix/zabbix_server.conf
+    regexp: ' ValueCacheSize='
+    line: ' ValueCacheSize=256M'
+
+- name: Configure TrendCacheSize
+  ansible.builtin.lineinfile:
+    path: /etc/zabbix/zabbix_server.conf
+    regexp: 'Timeout='
+    line: 'Timeout=30'
+
+- name: Configure TrendCacheSize
+  ansible.builtin.lineinfile:
+    path: /etc/zabbix/zabbix_server.conf
+    regexp: ' StartLLDProcessors=2'
+    line: ' StartLLDProcessors=10'
+
+- name: Configure TrendCacheSize
   ansible.builtin.lineinfile:
     path: /etc/zabbix/zabbix_server.conf
     regexp: ''
     line: ''
 
-- name: Configure Postgresql DBPassword
+- name: Configure TrendCacheSize
   ansible.builtin.lineinfile:
     path: /etc/zabbix/zabbix_server.conf
     regexp: ''
     line: ''
 
-- name: Configure Postgresql DBPassword
+- name: Configure TrendCacheSize
   ansible.builtin.lineinfile:
     path: /etc/zabbix/zabbix_server.conf
     regexp: ''
     line: ''
 
-- name: Configure Postgresql DBPassword
+- name: Configure TrendCacheSize
   ansible.builtin.lineinfile:
     path: /etc/zabbix/zabbix_server.conf
     regexp: ''
     line: ''
 
-- name: Configure Postgresql DBPassword
+- name: Configure TrendFunctionCacheSize
   ansible.builtin.lineinfile:
     path: /etc/zabbix/zabbix_server.conf
-    regexp: ''
-    line: ''
-
-- name: Configure Postgresql DBPassword
-  ansible.builtin.lineinfile:
-    path: /etc/zabbix/zabbix_server.conf
-    regexp: ''
-    line: ''
-
-- name: Configure Postgresql DBPassword
-  ansible.builtin.lineinfile:
-    path: /etc/zabbix/zabbix_server.conf
-    regexp: ''
-    line: ''
+    regexp: ' TrendFunctionCacheSize='
+    line: ' TrendFunctionCacheSize=64M'
 
 - name: Configure nginx listen port
   ansible.builtin.lineinfile:
