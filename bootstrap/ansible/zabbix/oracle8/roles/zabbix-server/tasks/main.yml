@@ -19,11 +19,6 @@
     name: zabbix-server
     state: stopped
 
-- name: Stop zabbix-mask
-  ansible.builtin.systemd:
-    name: zabbix-server
-    state: masked
-
 - name: Configure Postgresql DBHost
   ansible.builtin.lineinfile:
     path: /etc/zabbix/zabbix_server.conf
