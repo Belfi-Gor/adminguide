@@ -27,15 +27,6 @@
 - name: Postgresqsl-14 initdb
   ansible.builtin.shell: /usr/pgsql-14/bin/postgresql-14-setup initdb
 
-- name: Disable the built-in PostgreSQL module
-  ansible.builtin.shell: cat /usr/share/zabbix-sql-scripts/postgresql/proxy.sql | sudo -u zabbix psql zabbix_proxy
-
-  - name: Configure Postgresql DBPassword
-  ansible.builtin.lineinfile:
-    path: /etc/zabbix/zabbix_server.conf
-    regexp: '# DBPassword='
-    line: 'DBPassword=123456789'
-
 - name: Postgresql start & enable
   ansible.builtin.systemd:
     name: postgresql-14
