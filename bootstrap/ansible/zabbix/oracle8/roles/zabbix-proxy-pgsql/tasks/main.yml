@@ -37,7 +37,7 @@
 - name: Disable the built-in PostgreSQL module
   ansible.builtin.shell: cat /usr/share/zabbix-sql-scripts/postgresql/proxy.sql | sudo -u zabbix psql zabbix_proxy
 
-  - name: Configure Postgresql DBPassword
+- name: Configure Postgresql DBPassword
   ansible.builtin.lineinfile:
     path: /etc/zabbix/zabbix_server.conf
     regexp: '# DBPassword='
