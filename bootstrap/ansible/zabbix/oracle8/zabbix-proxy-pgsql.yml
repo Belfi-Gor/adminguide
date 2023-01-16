@@ -1,6 +1,6 @@
 ---
 - name: Using zabbix-proxy-pgsql-role 
-  hosts: zabbix-servers
+  hosts: zabbix-proxy
   become: yes
   roles:
     - role: zabbix-proxy-pgsql
