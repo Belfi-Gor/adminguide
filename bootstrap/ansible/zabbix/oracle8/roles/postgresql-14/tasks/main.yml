@@ -1,0 +1,28 @@
+---
+# tasks file for postgresql-14
+- name: Install the postgresql-14 repo rpm from an official repo
+  ansible.builtin.dnf:
+    name: 'https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm'
+    disable_gpg_check: true
+    state: present
+
+- name: Disable the built-in PostgreSQL module
+  ansible.builtin.shell: dnf -qy module disable postgresql
+
+- name: Installing packages
+  ansible.builtin.dnf:
+    name: ['postgresql14-server']
+    state: present
+
+- name: Disable the built-in PostgreSQL module
+  ansible.builtin.shell: /usr/pgsql-14/bin/postgresql-14-setup initdb
+
+- name: Restart zabbix-agent
+  ansible.builtin.systemd:
+    name: postgresql-14
+    state: enabled
+
+- name: Restart zabbix-agent
+  ansible.builtin.systemd:
+    name: postgresql-14
+    state: started
