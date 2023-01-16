@@ -12,15 +12,21 @@
     state: present
 
 - name: Create postgresql zabbix user
+  become: true
+  become_user: postgres
   community.postgresql.postgresql_user:
     name: zabbix
-    password: 123456789
+    password: '123456789'
 
 - name: Create postgresql zabbix_proxy db
+  become: true
+  become_user: postgres
   community.postgresql.postgresql_db:
     name: zabbix_proxy
 
 - name: GRANT ALL PRIVILEGES ON DATABASE zabbix_proxy TO zabbix
+  become: true
+  become_user: postgres
   community.postgresql.postgresql_privs:
     db: postgres
     privs: ALL
