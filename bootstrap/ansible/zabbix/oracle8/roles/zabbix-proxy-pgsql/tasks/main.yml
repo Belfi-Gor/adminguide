@@ -11,6 +11,16 @@
     name: ['zabbix-proxy-pgsql', 'zabbix-sql-scripts', 'zabbix-selinux-policy']
     state: present
 
+- name: Install bottle for Python 3.3 specifically, using the 'pip3.3' executable
+  ansible.builtin.pip:
+    name: pip
+    state: latest
+
+- name: Install bottle for Python 3.3 specifically, using the 'pip3.3' executable
+  ansible.builtin.pip:
+    name: psycopg2-binary
+    state: latest   
+
 - name: Create postgresql zabbix user
   become: true
   become_user: postgres
