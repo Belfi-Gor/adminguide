@@ -3,4 +3,5 @@
   hosts: zabbix-proxy
   become: yes
   roles:
+    - role: postgresql-14
     - role: zabbix-proxy-pgsql
