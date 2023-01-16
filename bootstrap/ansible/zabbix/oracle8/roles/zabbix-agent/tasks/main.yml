@@ -15,13 +15,13 @@
   ansible.builtin.lineinfile:
     path: /etc/zabbix/zabbix_agentd.conf
     regexp: 'Server=127.0.0.1'
-    line: Server=127.0.0.1,10.241.114.20,10.242.114.20,10.243.114.20
+    line: Server=127.0.0.1,u8-mon-app01,ox1-mon-app01,ox2-mon-app01
 
 - name: Configure active servers white list
   ansible.builtin.lineinfile:
     path: /etc/zabbix/zabbix_agentd.conf
     regexp: 'ServerActive=127.0.0.1'
-    line: ServerActive=127.0.0.1,10.241.114.20,10.242.114.20,10.243.114.20
+    line: ServerActive=127.0.0.1;u8-mon-app01;ox1-mon-app01;ox2-mon-app01
 
 - name: Configure StartAgents
   ansible.builtin.lineinfile:
