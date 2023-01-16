@@ -19,6 +19,14 @@
     name: zabbix-server
     state: stopped
 
+- name: Backyp original config file
+  ansible.builtin.copy:
+    src: /etc/zabbix/zabbix_server.conf
+    dest: /etc/zabbix/zabbix_server.orig
+    owner: root
+    group: root
+    mode: '0644'
+
 - name: Configure LogFileSize
   ansible.builtin.lineinfile:
     path: /etc/zabbix/zabbix_server.conf
@@ -139,15 +147,15 @@
 #     regexp: ''
 #     line: ''
 
-- name: Configure nginx listen port
-  ansible.builtin.lineinfile:
-    path: /etc/zabbix/zabbix_server.conf
-    regexp: '#        listen          80;'
-    line: '        listen          80;'
+# - name: Configure nginx listen port
+#   ansible.builtin.lineinfile:
+#     path: /etc/zabbix/zabbix_server.conf
+#     regexp: '#        listen          80;'
+#     line: '        listen          80;'
 
-- name: Configure nginx server name
-  ansible.builtin.lineinfile:
-    path: /etc/zabbix/zabbix_server.conf
-    regexp: '#        server_name     example.com;'
-    line: '        server_name     zabbix6.lan;'
+# - name: Configure nginx server name
+#   ansible.builtin.lineinfile:
+#     path: /etc/zabbix/zabbix_server.conf
+#     regexp: '#        server_name     example.com;'
+#     line: '        server_name     zabbix6.lan;'
     
