@@ -10,3 +10,20 @@
   ansible.builtin.dnf:
     name: ['zabbix-proxy-pgsql', 'zabbix-sql-scripts', 'zabbix-selinux-policy']
     state: present
+
+- name: Create postgresql zabbix user
+  community.postgresql.postgresql_user:
+    name: zabbix
+    password: 123456789
+
+- name: Create postgresql zabbix_proxy db
+  community.postgresql.postgresql_db:
+    name: zabbix_proxy
+
+- name: GRANT ALL PRIVILEGES ON DATABASE zabbix_proxy TO zabbix
+  community.postgresql.postgresql_privs:
+    db: postgres
+    privs: ALL
+    type: database
+    obj: zabbix_proxy
+    role: zabbix
